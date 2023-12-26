@@ -16,19 +16,19 @@ const Checkout = () => {
                 <div className="grid sm:grid-cols-2 gap-4 sm:gap-8">
                     <form className='border px-4 py-5 space-y-3 sm:space-y-5 h-fit'>
                         <div className='grid sm:grid-cols-2 gap-3 sm:gap-5'>
-                            <div className='flex flex-col gap-y-2'>
+                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
                                 <label htmlFor="name" className='font-semibold'>Name</label>
                                 <input type="text" id='name' placeholder='John Doe' className='border px-3 py-1 ' />
                             </div>
-                            <div className='flex flex-col gap-y-2'>
+                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
                                 <label htmlFor="email" className='font-semibold'>Email</label>
                                 <input type="text" id='email' placeholder='johndoe@hotmail.com' className='border px-3 py-1 ' />
                             </div>
-                            <div className='flex flex-col gap-y-2'>
+                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
                                 <label htmlFor="phone" className='font-semibold'>Phone number</label>
                                 <input type="number" id='phone' placeholder='03xxxxxxxxx' className='border px-3 py-1 ' />
                             </div>
-                            <div className='flex flex-col gap-y-2'>
+                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
                                 <label htmlFor="country" className='font-semibold'>Country</label>
                                 <select id="country" className='border px-3 py-1 '>
                                     <option>--Select Country--</option>
@@ -40,15 +40,15 @@ const Checkout = () => {
                                     <option>India</option>
                                 </select>
                             </div>
-                            <div className='flex flex-col gap-y-2'>
+                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
                                 <label htmlFor="city" className='font-semibold'>City</label>
                                 <input type="text" id='city' placeholder='Karachi' className='border px-3 py-1 ' />
                             </div>
-                            <div className='flex flex-col gap-y-2'>
+                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
                                 <label htmlFor="address" className='font-semibold'>Address</label>
                                 <input type="text" id='address' placeholder='House # 1, street abc, xyz road' className='border px-3 py-1 ' />
                             </div>
-                            <div className='flex flex-col gap-y-2'>
+                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
                                 <label htmlFor="payMethod" className='font-semibold'>Payment method</label>
                                 <select id="payMethod" className='border px-3 py-1 '>
                                     <option>--Select Payment method--</option>

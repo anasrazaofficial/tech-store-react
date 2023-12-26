@@ -17,7 +17,7 @@ const Shop = () => {
                         <p className='sm:font-semibold sm:text-xl'>Every Computer and laptop</p>
                         <h2 className='text-3xl sm:text-4xl font-bold'>Up to 40% off !</h2>
                         <button>
-                            <Link to='/contact' className='bg-[--theme-secondary] font-semibold sm:font-bold py-3 px-5 sm:px-8 hover:bg-[--theme-secondary-hover] transition-colors text-white'>Contact</Link>
+                            <Link to='/contact' className='bg-[--theme-secondary] font-semibold sm:font-bold py-2 sm:py-3 px-8 sm:px-10 hover:bg-[--theme-secondary-hover] transition-colors text-white'>Contact</Link>
                         </button>
                     </div>
                     <img src="\src\Assets\pc.png" alt="" className='mt-8 sm:mt-0' />

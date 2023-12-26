@@ -11,12 +11,16 @@ import About from './Pages/About'
 import Cart from './Pages/Cart'
 import Product from './Pages/Product'
 import Checkout from './Pages/Checkout'
+import Login from './Pages/Login'
+import Signup from './Pages/Signup'
 
 
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
-      <Route path='' element={<Home />} />
+      <Route path='' element={<Login />} />
+      <Route path='signup' element={<Signup />} />
+      <Route path='home' element={<Home />} />
       <Route path='about' element={<About />} />
       <Route path='shop' element={<Shop />} />
       <Route path='whyus' element={<WhyUs />} />

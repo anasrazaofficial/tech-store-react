@@ -18,7 +18,7 @@ const Product = () => {
                     <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5'>Product Name</h2>
                     <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil totam vel voluptates similique quam dolore commodi doloremque facilis saepe esse voluptatem non dolorum ut aperiam, rem veniam. Iste, sit repellat.</p>
                     <button>
-                        <Link to='/cart' className='bg-[--theme-secondary] font-semibold sm:font-bold py-3 px-5 sm:px-8 hover:bg-[--theme-secondary-hover] transition-colors text-white'>Add to cart</Link>
+                        <Link to='/cart' className='bg-[--theme-secondary] font-semibold sm:font-bold py-2 sm:py-3 px-8 sm:px-10 hover:bg-[--theme-secondary-hover] transition-colors text-white'>Add to cart</Link>
                     </button>
                 </div>
             </div>

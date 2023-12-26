@@ -1,0 +1,40 @@
+{
+  "users": [
+    {
+      "name": "Anas",
+      "email": "anas@gmail.com",
+      "username": "asdasd",
+      "password": "11111111",
+      "confirmPassword": "11111111",
+      "isLoggedin": false,
+      "id": 1
+    },
+    {
+      "name": "Gadget Galaxy",
+      "email": "ad@a",
+      "username": "anas123",
+      "password": "22222222",
+      "confirmPassword": "22222222",
+      "isLoggedin": true,
+      "id": 2
+    },
+    {
+      "name": "Ali",
+      "email": "ali@hotmail",
+      "username": "ali123",
+      "password": "12121212",
+      "confirmPassword": "12121212",
+      "isLoggedin": false,
+      "id": 3
+    },
+    {
+      "name": "test",
+      "email": "test@gmail",
+      "username": "test111",
+      "password": "12345678",
+      "confirmPassword": "12345678",
+      "isLoggedin": false,
+      "id": 4
+    }
+  ]
+}
