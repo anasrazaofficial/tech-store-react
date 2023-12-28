@@ -5,12 +5,11 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    // debugger
     const isLocalStorageActive = window.localStorage.getItem('active') === null;
-    const isAllowedRoute = ['/signup', '/'].includes(location.pathname);
+    const isAllowedRoute = ['/signup', '/login'].includes(location.pathname);
 
     if (isLocalStorageActive && !isAllowedRoute) {
-      window.location.href = '/';
+      window.location.href = '/login';
     }
   }, [location.pathname]);
   return (
@@ -21,3 +20,6 @@ function App() {
 }
 
 export default App
+
+
+export const url='http://localhost:3000'

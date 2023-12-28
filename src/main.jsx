@@ -18,9 +18,9 @@ import Signup from './Pages/Signup'
 const routes = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
-      <Route path='' element={<Login />} />
+      <Route path='login' element={<Login />} />
       <Route path='signup' element={<Signup />} />
-      <Route path='home' element={<Home />} />
+      <Route path='' element={<Home />} />
       <Route path='about' element={<About />} />
       <Route path='shop' element={<Shop />} />
       <Route path='whyus' element={<WhyUs />} />
