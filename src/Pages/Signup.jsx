@@ -99,7 +99,7 @@ const Signup = () => {
                         <div className='mx-auto text-center mt-6'>
                             <button className='bg-[--theme-secondary] font-semibold sm:font-bold py-2 px-10 sm:px-8 hover:bg-[--theme-secondary-hover] transition-colors text-white'>Signup</button>
                         </div>
-                        <p className='text-sm'>Already have an account! <Link to='/' className='font-bold cursor-pointer'>Login</Link></p>
+                        <p className='text-sm'>Already have an account! <Link to='/login' className='font-bold cursor-pointer'>Login</Link></p>
                     </form>
                 </div>
             </div>

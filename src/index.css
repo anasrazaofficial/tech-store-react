@@ -3,6 +3,7 @@
 
 :root {
   --theme-primary: #4842a2;
+  --bg-primary-hover:#302c6d;
   --theme-secondary: #48ca95;
   --theme-secondary-hover: #08ae6a;
 }
