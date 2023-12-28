@@ -1,5 +1,20 @@
 {
-  "users": [],
+  "users": [
+    {
+      "name": "Anas",
+      "email": "anas@gmail.com",
+      "phoneNumber": "+92 322 0279939",
+      "username": "anas123",
+      "dob": "2004-11-04",
+      "country": "Pakistan",
+      "city": "Karachi",
+      "address": "FB area",
+      "password": "11111111",
+      "confirmPassword": "11111111",
+      "isLoggedin": true,
+      "id": 1
+    }
+  ],
   "products": [
     {
       "id": 1,
@@ -65,7 +80,36 @@
       "quantity": 1
     }
   ],
-  "cart": [],
+  "cart": [
+    {
+      "id": 2,
+      "productName": "Mouse",
+      "url": "src/Assets/product2.png",
+      "price": 400,
+      "quantity": 4
+    },
+    {
+      "id": 1,
+      "productName": "Keyboard",
+      "url": "src/Assets/product1.png",
+      "price": 500,
+      "quantity": 3
+    },
+    {
+      "id": 9,
+      "productName": "Drive",
+      "url": "src/Assets/product9.png",
+      "price": 1050,
+      "quantity": 1
+    },
+    {
+      "id": 7,
+      "productName": "Ram",
+      "url": "src/Assets/product7.png",
+      "price": 350,
+      "quantity": 3
+    }
+  ],
   "orders": [
     {
       "name": "Anas",

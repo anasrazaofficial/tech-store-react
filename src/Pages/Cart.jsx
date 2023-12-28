@@ -133,7 +133,7 @@ const Cart = () => {
                             <h5 className='text-xl font-semibold col-span-2'>Total Amount :</h5>
                             <span>Rs. {subtotal}</span>
                         </div>
-                        <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white mt-8 text-center' onClick={submit}>Proceed to Checkout</button>
+                        <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white mt-8 text-center w-full' onClick={submit}>Proceed to Checkout</button>
                     </div>
                 </div>
             </div>

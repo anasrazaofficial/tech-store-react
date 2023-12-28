@@ -6,6 +6,7 @@ import { url } from '../App'
 const Checkout = () => {
     const [cartData, setCartData] = useState({})
     const [users, setUsers] = useState([])
+    const [subtotal, setSubtotal] = useState(0)
     const [customerData, setCustomerData] = useState({
         name: '',
         email: '',
@@ -18,9 +19,12 @@ const Checkout = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        let data = JSON.parse(window.localStorage.getItem('cartData'))
-        setCartData(data)
-        console.log(data);
+        axios.get(`${url}/cart`)
+            .then(res => {
+                setCartData(res.data)
+                setSubtotal(res.data.reduce((total, item) => total += (item.price * item.quantity), 0))
+            })
+            .catch(err => console.error(err))
         axios.get(`${url}/users`)
             .then(res => setUsers(res.data))
             .catch(err => console.error(err))
@@ -29,10 +33,9 @@ const Checkout = () => {
     const submit = (e) => {
         e.preventDefault()
         let userId = users.find(u => u.isLoggedin)?.id
-        axios.post(`${url}/checkout`, { ...customerData, ...cartData, userId })
+        axios.post(`${url}/checkout`, { ...customerData, ...cartData, subtotal, userId })
             .then(() => {
                 cartData.products.forEach(item => {
-                    debugger
                     axios.delete(`${url}/cart/${item.id}`)
                         .then(resp => console.log(resp))
                         .catch(error => console.error(error))
@@ -56,48 +59,23 @@ const Checkout = () => {
 
                 <div className="grid sm:grid-cols-2 gap-4 sm:gap-8">
                     <form className='border px-4 py-5 space-y-3 sm:space-y-5 h-fit' onSubmit={submit}>
-                        <div className='grid sm:grid-cols-2 gap-3 sm:gap-5'>
-                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
-                                <label htmlFor="name" className='font-semibold'>Name</label>
-                                <input type="text" id='name' placeholder='John Doe' className='border px-3 py-1' onChange={(e) => setCustomerData({ ...customerData, name: e.target.value })} required />
+                        <label htmlFor="payMethod" className='font-semibold'>Payment method</label>
+                        <div className='grid grid-cols-2'>
+                            <div className='border rounded-md'>
+                                <span>JazzCash</span>
+                                <img src="src\Assets\payment-logo\jazzcash.png" alt="" />
                             </div>
-                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
-                                <label htmlFor="email" className='font-semibold'>Email</label>
-                                <input type="email" id='email' placeholder='johndoe@hotmail.com' className='border px-3 py-1' onChange={(e) => setCustomerData({ ...customerData, email: e.target.value })} required />
+                            <div className='border rounded-md'>
+                                <span>Easypaisa</span>
+                                <img src="src\Assets\payment-logo\easypaisa.png" alt="" />
                             </div>
-                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
-                                <label htmlFor="phone" className='font-semibold'>Phone number</label>
-                                <input type="number" id='phone' placeholder='03xxxxxxxxx' className='border px-3 py-1' onChange={(e) => setCustomerData({ ...customerData, phoneNumber: e.target.value })} required />
+                            <div className='border rounded-md'>
+                                <span>Bank transfer</span>
+                                <img src="src\Assets\payment-logo\bank-transfer.png" alt="" />
                             </div>
-                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
-                                <label htmlFor="country" className='font-semibold'>Country</label>
-                                <select id="country" className='border px-3 py-1' onChange={(e) => setCustomerData({ ...customerData, country: e.target.value })} required>
-                                    <option>--Select Country--</option>
-                                    <option>Pakistan</option>
-                                    <option>USA</option>
-                                    <option>UK</option>
-                                    <option>China</option>
-                                    <option>Turkey</option>
-                                    <option>India</option>
-                                </select>
-                            </div>
-                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
-                                <label htmlFor="city" className='font-semibold'>City</label>
-                                <input type="text" id='city' placeholder='Karachi' className='border px-3 py-1' onChange={(e) => setCustomerData({ ...customerData, city: e.target.value })} required />
-                            </div>
-                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
-                                <label htmlFor="address" className='font-semibold'>Address</label>
-                                <input type="text" id='address' placeholder='House # 1, street abc, xyz road' className='border px-3 py-1' onChange={(e) => setCustomerData({ ...customerData, address: e.target.value })} required />
-                            </div>
-                            <div className='flex flex-col gap-y-1 sm:gap-y-2'>
-                                <label htmlFor="payMethod" className='font-semibold'>Payment method</label>
-                                <select id="payMethod" className='border px-3 py-1' onChange={(e) => setCustomerData({ ...customerData, paymentMethod: e.target.value })} required>
-                                    <option>--Select Payment method--</option>
-                                    <option>JazzCash</option>
-                                    <option>Easypaisa</option>
-                                    <option>Bank transfer</option>
-                                    <option>Cash on delivery</option>
-                                </select>
+                            <div className='border rounded-md'>
+                                <span>Cash on delivery</span>
+                                <img src="src\Assets\payment-logo\cash-delivery.png" alt="" />
                             </div>
                         </div>
                         <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white w-full'>Place order</button>
@@ -109,7 +87,7 @@ const Checkout = () => {
                         <hr className='border' />
                         <div className='grid grid-cols-3 items-center mt-2'>
                             <h5 className='text-xl font-semibold col-span-2'>Total Amount :</h5>
-                            <span>Rs. {cartData?.total}</span>
+                            <span>Rs. {subtotal}</span>
                         </div>
                         <div className='grid grid-cols-3 items-center mt-1'>
                             <h5 className='text-xl font-semibold col-span-2'>Discount % :</h5>
@@ -125,7 +103,7 @@ const Checkout = () => {
                         </div>
                         <div className='grid grid-cols-3 items-center border-t-2 mt-2 pt-2'>
                             <h5 className='text-xl font-semibold col-span-2'>Total Price :</h5>
-                            <span>Rs. {cartData?.total - 100}</span>
+                            <span>Rs. {subtotal + 100}</span>
                         </div>
                     </div>
                 </div>
