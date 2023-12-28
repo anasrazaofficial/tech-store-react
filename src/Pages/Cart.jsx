@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Footer, Navbar } from '../Components'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { url } from '../App'
 
 const Cart = () => {
     const [cartProds, setCartProds] = useState([])
@@ -13,7 +14,7 @@ const Cart = () => {
     }, [])
 
     const getProducts = () => {
-        axios.get('http://localhost:3000/cart')
+        axios.get(`${url}/cart`)
             .then(res => {
                 setCartProds(res.data)
                 getSubtotal(res.data)

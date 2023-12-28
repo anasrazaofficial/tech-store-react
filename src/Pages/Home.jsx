@@ -1,10 +1,49 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Navbar, Footer } from '../Components'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { url } from '../App'
+
 
 const Home = () => {
+    const [added, setAdded] = useState([])
+    const [products, setProducts] = useState([])
 
-    const [added, setAdded] = useState(false)
+    useEffect(() => {
+        window.scrollTo(0, 0)
+        axios.get(`${url}/products`)
+            .then(res => {
+                res.data.splice(6, res.data.length)
+                setProducts(res.data);
+                res.data.forEach(() => added.push(false));
+            })
+    }, [])
+
+    const addToCart = (i, product) => {
+        setAdded((prevAdded) => {
+            const newAdded = [...prevAdded];
+            newAdded[i] = true;
+            return newAdded;
+        });
+        axios.get(`${url}/cart`)
+            .then(response => {
+                let itemFound = false
+                response.data.length === 0 ? axios.post(`${url}/cart`, product) : null
+                for (let i = 0; i < response.data.length; i++) {
+                    const element = response.data[i];
+                    debugger
+                    if (element.id === product.id) {
+                        const quan = element.quantity
+                        axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
+                        itemFound = true
+                        break
+                    } else itemFound = false
+                }
+                if (!itemFound) axios.post(`${url}/cart`, product)
+            }).catch(err => console.error(err))
+    }
+
+
 
     return (
         <div className='bg-gray-100'>
@@ -53,16 +92,21 @@ const Home = () => {
             <div className='px-5 sm:px-20 py-8 sm:py-14 bg-gray-100 space-y-5 sm:space-y-8 mt-8 sm:mt-14'>
                 <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5'>Our Products</h2>
                 <div className='bg-white grid sm:grid-cols-3 gap-5 p-5'>
-                    <div className='flex flex-col items-center border-2 border-gray-100 rounded-lg py-3'>
-                        <Link to='/product/{id}'>
-                            <img src="\src\Assets\product1.png" alt="" />
-                        </Link>
-                        <div className='flex w-full px-5 gap-x-5'>
-                            <Link to='/product/{id}' className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>More Info</Link>
-                            {!added && <button className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors' onClick={() => setAdded(true)}>Add to cart</button>}
-                            {added && <Link to='/cart' className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>Go to cart</Link>}
+                    {products.map((el, i) => (
+                        <div className='flex flex-col items-center border-2 border-gray-100 rounded-lg py-3' key={el.id}>
+                            <img src={el.url} alt="" />
+                            <h3 className='sm:text-2xl font-semibold'>{el.productName}</h3>
+                            <small className='text-gray-600 text-lg mb-1 sm:mb-3'>Rs. {el.price}</small>
+                            <div className='flex w-full px-5 gap-x-5'>
+                                <Link to={{
+                                    pathname: '/product',
+                                    search: `?id=${el.id}`,
+                                }} className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>More Info</Link>
+                                {!added[i] && <button className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors' onClick={() => addToCart(i, el)}>Add to cart</button>}
+                                {added[i] && <Link to='/cart' className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>Go to cart</Link>}
+                            </div>
                         </div>
-                    </div>
+                    ))}
 
                     <div className='sm:col-span-3 sm:grid grid-cols-3'>
                         <Link to='/shop' className='border-2 border-[--theme-secondary] text-[--theme-secondary] inline-block w-full font-semibold sm:font-bold hover:bg-[#48ca9526] transition-colors py-3 sm:col-start-2 text-center'>See more</Link>

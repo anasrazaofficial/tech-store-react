@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const Signup = () => {
     const [user, setUser] = useState({
@@ -13,35 +13,31 @@ const Signup = () => {
     })
     const [pass, setPass] = useState(false)
     const [conPass, setConPass] = useState(false)
-    const navigate = useNavigate()
 
     const signupUser = (e) => {
         e.preventDefault()
 
         const post = () => {
-            axios.post('http://localhost:3000/users', user)
+            axios.post(`${url}/users`, user)
                 .then((resp) => {
                     console.info(resp)
                     window.localStorage.setItem('active', 'true')
-                    navigate('/home')
+                    window.location.href = '/'
                 })
                 .catch((err) => console.error(err))
         }
 
-        axios.get('http://localhost:3000/users')
+        axios.get(`${url}/users`)
             .then((res) => {
-                debugger
                 if (user.password === user.confirmPassword) {
                     if (res.data.length === 0) {
                         post()
                     } else {
-                        // Start from here add flag for post only one time
                         let userFound = true
                         for (let i = 0; i < res.data.length; i++) {
                             const e = res.data[i];
-                            if (e.username !== user.username && e.email !== user.email) {
-                                userFound = true
-                            } else {
+                            if (e.username !== user.username && e.email !== user.email) userFound = true
+                            else {
                                 alert('Username or email not available')
                                 userFound = false
                                 break

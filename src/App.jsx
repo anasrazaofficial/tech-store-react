@@ -21,7 +21,7 @@ function App() {
     }, 5000)
   }, [])
   const getCartItems = () => {
-    axios.get('http://localhost:3000/cart')
+    axios.get(`${url}/cart`)
       .then(res => {
         setCartProducts(res.data)
       }).catch(err => console.error(err))
@@ -41,3 +41,6 @@ function App() {
 }
 
 export default App
+
+
+export const url = 'http://localhost:3000'

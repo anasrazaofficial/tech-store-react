@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Footer, Navbar } from '../Components'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { url } from '../App'
 
 const Shop = () => {
 
@@ -10,7 +11,7 @@ const Shop = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        axios.get('http://localhost:3000/products')
+        axios.get(`${url}/products`)
             .then(res => {
                 setProducts(res.data);
                 res.data.forEach(() => added.push(false));
@@ -18,31 +19,26 @@ const Shop = () => {
     }, [])
 
     const addToCart = (i, product) => {
-        // setAdded((prev) => {
-        //     debugger
-        //     prev[i] = true
-        //     return prev
-        // })
         setAdded((prevAdded) => {
             const newAdded = [...prevAdded];
             newAdded[i] = true;
             return newAdded;
         });
-        axios.get('http://localhost:3000/cart')
+        axios.get(`${url}/cart`)
             .then(response => {
                 let itemFound = false
-                response.data.length === 0 ? axios.post('http://localhost:3000/cart', product) : null
+                response.data.length === 0 ? axios.post(`${url}/cart`, product) : null
                 for (let i = 0; i < response.data.length; i++) {
                     const element = response.data[i];
                     debugger
                     if (element.id === product.id) {
                         const quan = element.quantity
-                        axios.put(`http://localhost:3000/cart/${product.id}`, { ...product, quantity: quan + 1 })
+                        axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
                         itemFound = true
                         break
                     } else itemFound = false
                 }
-                if (!itemFound) axios.post('http://localhost:3000/cart', product)
+                if (!itemFound) axios.post(`${url}/cart`, product)
             }).catch(err => console.error(err))
     }
 

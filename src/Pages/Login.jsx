@@ -2,6 +2,7 @@ import { info } from 'autoprefixer'
 import axios from 'axios'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { url } from '../App'
 
 const Login = () => {
     const [pass, setPass] = useState(false)
@@ -12,7 +13,7 @@ const Login = () => {
 
     const loginUser = (e) => {
         e.preventDefault()
-        axios.get('http://localhost:3000/users')
+        axios.get(`${url}/users`)
             .then((res) => {
                 console.info(res)
                 if (res.data.length !== 0) {
@@ -23,7 +24,7 @@ const Login = () => {
                             axios.put(`http://localhost:3000/users/${element.id}`, { ...element, isLoggedin: true })
                             localStorage.setItem('active', 'true')
                             invalid = false
-                            window.location.href = '/home'
+                            window.location.href = '/'
                             break
                         }
                     }

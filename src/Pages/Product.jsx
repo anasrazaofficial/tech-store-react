@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Navbar, Footer } from '../Components'
 import axios from 'axios';
+import { url } from '../App';
 
 const Product = () => {
     const myParam = new URLSearchParams(useLocation().search).get('id');
@@ -9,27 +10,27 @@ const Product = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        axios.get(`http://localhost:3000/products/${myParam}`)
+        axios.get(`${url}/products/${myParam}`)
             .then(res => setProduct(res.data))
             .catch(err => console.error(err))
     }, [])
 
     const addToCart = () => {
-        axios.get('http://localhost:3000/cart')
+        axios.get(`${url}/cart`)
             .then(response => {
                 let itemFound = false
-                response.data.length === 0 ? axios.post('http://localhost:3000/cart', product) : null
+                response.data.length === 0 ? axios.post(`${url}/cart`, product) : null
                 for (let i = 0; i < response.data.length; i++) {
                     const element = response.data[i];
                     debugger
                     if (element.id === product.id) {
                         const quan = element.quantity
-                        axios.put(`http://localhost:3000/cart/${product.id}`, { ...product, quantity: quan + 1 })
+                        axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
                         itemFound = true
                         break
                     } else itemFound = false
                 }
-                if (!itemFound) axios.post('http://localhost:3000/cart', product)
+                if (!itemFound) axios.post(`${url}/cart`, product)
             }).catch(err => console.error(err))
     }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Navbar, Footer } from '../Components'
 import axios from 'axios'
+import { url } from '../App'
 
 const Checkout = () => {
     const [cartData, setCartData] = useState({})
@@ -20,7 +21,7 @@ const Checkout = () => {
         let data = JSON.parse(window.localStorage.getItem('cartData'))
         setCartData(data)
         console.log(data);
-        axios.get('http://localhost:3000/users')
+        axios.get(`${url}/users`)
             .then(res => setUsers(res.data))
             .catch(err => console.error(err))
     }, [])
@@ -28,11 +29,11 @@ const Checkout = () => {
     const submit = (e) => {
         e.preventDefault()
         let userId = users.find(u => u.isLoggedin)?.id
-        axios.post('http://localhost:3000/checkout', { ...customerData, ...cartData, userId })
+        axios.post(`${url}/checkout`, { ...customerData, ...cartData, userId })
             .then(() => {
                 cartData.products.forEach(item => {
                     debugger
-                    axios.delete(`http://localhost:3000/cart/${item.id}`)
+                    axios.delete(`${url}/cart/${item.id}`)
                         .then(resp => console.log(resp))
                         .catch(error => console.error(error))
                 })

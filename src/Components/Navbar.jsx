@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
 import { NavLink, Link } from 'react-router-dom';
+import { url } from '../App';
 
 const Navbar = () => {
     const [nav, setNav] = useState(false)
@@ -22,16 +23,18 @@ const Navbar = () => {
 
     const logout = () => {
         window.localStorage.clear()
-        axios.get('http://localhost:3000/users')
+        axios.get(`${url}/users`)
             .then((res) => {
                 res.data.map(el => {
-                    axios.put(`http://localhost:3000/users/${el.id}`, { ...el, isLoggedin: false })
+                    axios.put(`${url}/users/${el.id}`, { ...el, isLoggedin: false })
                 })
                 window.location.href = '/'
             }).catch(err => console.error(err))
     }
 
     return (
+
+        
         <nav className='flex py-5 items-start sm:items-center justify-between'>
 
             <Link to='/'><img src="\src\Assets\logo.png" alt="" /></Link>
