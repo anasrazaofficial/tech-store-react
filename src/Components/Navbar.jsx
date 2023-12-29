@@ -33,8 +33,6 @@ const Navbar = () => {
     }
 
     return (
-
-        
         <nav className='flex py-5 items-start sm:items-center justify-between'>
 
             <Link to='/'><img src="\src\Assets\logo.png" alt="" /></Link>
@@ -54,7 +52,10 @@ const Navbar = () => {
 
                     <li><NavLink to='/contact' className={({ isActive }) => `cursor-pointer hover:text-[--theme-secondary] transition-colors ${isActive ? 'sm:text-[--theme-secondary] text-[--theme-primary]' : ''}`}>Contact</NavLink></li >
                 </ul >
-                <button className='mt-5 sm:mt-0 bg-[--theme-primary] w-full sm:w-auto py-2 sm:p-0 cursor-pointer hover:text-[--theme-secondary] transition-colors' onClick={logout}>Logout</button>
+                <div>
+                    <button className='mt-5 sm:mt-0 w-full sm:w-auto py-1 px-3 rounded-l-md cursor-pointer transition-colors bg-[--theme-secondary] hover:bg-[--theme-secondary-hover]' onClick={logout}>Logout</button>
+                    <button className='mt-5 sm:mt-0 w-full sm:w-auto py-1 px-3 rounded-r-md border-l cursor-pointer  transition-colors bg-[--theme-secondary] hover:bg-[--theme-secondary-hover]' onClick={() => window.location.href = '/login'}>Login</button>
+                </div>
             </div >}
         </nav >
     )

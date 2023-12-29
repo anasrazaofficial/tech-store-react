@@ -7,14 +7,27 @@ const Checkout = () => {
     const [cartData, setCartData] = useState({})
     const [users, setUsers] = useState([])
     const [subtotal, setSubtotal] = useState(0)
-    const [customerData, setCustomerData] = useState({
-        name: '',
-        email: '',
-        phoneNumber: '',
-        country: '',
-        city: '',
-        address: '',
-        paymentMethod: '',
+    const [payMeth, setPayMeth] = useState({
+        jazzCash: {
+            isSelected: false,
+            phoneNumber: null,
+        },
+        easypaisa: {
+            isSelected: false,
+            phoneNumber: null,
+        },
+        bankTransfer: {
+            isSelected: false,
+            details: {
+                cardNumber: null,
+                cvv: null,
+                expiryDate: null,
+                otp: null
+            }
+        },
+        cashOnDelivery: {
+            isSelected: false
+        }
     })
 
     useEffect(() => {
@@ -32,17 +45,58 @@ const Checkout = () => {
 
     const submit = (e) => {
         e.preventDefault()
-        let userId = users.find(u => u.isLoggedin)?.id
-        axios.post(`${url}/checkout`, { ...customerData, ...cartData, subtotal, userId })
-            .then(() => {
-                cartData.products.forEach(item => {
-                    axios.delete(`${url}/cart/${item.id}`)
-                        .then(resp => console.log(resp))
-                        .catch(error => console.error(error))
-                })
-                window.localStorage.removeItem('cartData')
-                window.location.href = '/'
-            }).catch(err => console.error(err))
+        let paymentSelected = true
+        for (let i = 0; i < Object.keys(payMeth).length; i++) {
+            const element = Object.keys(payMeth)[i];
+            if (payMeth[element].isSelected) {
+                console.log(payMeth);
+                paymentSelected = false
+            }
+        }
+        if (paymentSelected) alert('Select payment method')
+    }
+
+    const selectMethod = (method) => {
+        setPayMeth(prevState => {
+            const newState = { ...prevState };
+            Object.keys(newState).forEach(key => {
+                newState[key].isSelected = false
+
+                if (newState[key].hasOwnProperty('phoneNumber')) newState[key].phoneNumber = null
+                else if (newState[key].hasOwnProperty('details')) {
+                    newState[key].details.cardNumber = null
+                    newState[key].details.cvv = null
+                    newState[key].details.expiryDate = null
+                    newState[key].details.otp = null
+                }
+            });
+            newState[method].isSelected = true;
+            return newState;
+        });
+
+    };
+
+    const setPaymentDetails = (value, method, field) => {
+        if (method === 'bankTransfer') {
+            setPayMeth((prevState) => ({
+                ...prevState,
+                bankTransfer: {
+                    ...prevState.bankTransfer,
+                    details: {
+                        ...prevState.bankTransfer.details,
+                        [field]: value,
+                    },
+                },
+            }));
+        } else {
+            setPayMeth(prevState => ({
+                ...prevState,
+                [method]: {
+                    ...prevState[method],
+                    phoneNumber: value
+                }
+            }));
+        }
     }
 
 
@@ -59,30 +113,65 @@ const Checkout = () => {
 
                 <div className="grid sm:grid-cols-2 gap-4 sm:gap-8">
                     <form className='border px-4 py-5 space-y-3 sm:space-y-5 h-fit' onSubmit={submit}>
-                        <label htmlFor="payMethod" className='font-semibold'>Payment method</label>
-                        <div className='grid grid-cols-2'>
-                            <div className='border rounded-md'>
+                        <h3 className='text-2xl font-bold text-center'>Payment method</h3>
+                        <div className='grid sm:grid-cols-4 gap-3'>
+                            <div className={`border rounded-md py-2 px-3 space-y-3 cursor-pointer ${payMeth.jazzCash.isSelected ? 'border-2 border-[--theme-secondary]' : ''}`} onClick={() => selectMethod('jazzCash')}>
                                 <span>JazzCash</span>
                                 <img src="src\Assets\payment-logo\jazzcash.png" alt="" />
                             </div>
-                            <div className='border rounded-md'>
+                            <div className={`border rounded-md py-2 px-3 space-y-3 cursor-pointer ${payMeth.easypaisa.isSelected ? 'border-2 border-[--theme-secondary]' : ''}`} onClick={() => selectMethod('easypaisa')}>
                                 <span>Easypaisa</span>
                                 <img src="src\Assets\payment-logo\easypaisa.png" alt="" />
                             </div>
-                            <div className='border rounded-md'>
+                            <div className={`border rounded-md py-2 px-3 space-y-3 cursor-pointer ${payMeth.bankTransfer.isSelected ? 'border-2 border-[--theme-secondary]' : ''}`} onClick={() => selectMethod('bankTransfer')}>
                                 <span>Bank transfer</span>
                                 <img src="src\Assets\payment-logo\bank-transfer.png" alt="" />
                             </div>
-                            <div className='border rounded-md'>
+                            <div className={`border rounded-md py-2 px-3 space-y-3 cursor-pointer ${payMeth.cashOnDelivery.isSelected ? 'border-2 border-[--theme-secondary]' : ''}`} onClick={() => selectMethod('cashOnDelivery')}>
                                 <span>Cash on delivery</span>
                                 <img src="src\Assets\payment-logo\cash-delivery.png" alt="" />
                             </div>
                         </div>
+
+
+                        {payMeth.jazzCash.isSelected &&
+                            <div className='flex flex-col gap-y-1 sm:gap-y-2 text-sm sm:text-base mt-6'>
+                                <label htmlFor="jazzCash" className='font-semibold'>Enter phone number (JazzCash)</label>
+                                <input type="tel" id='jazzCash' name='jazzCash' placeholder='+923121234567' className='border px-2 sm:px-3 py-1 focus-visible:outline-black' maxLength='13' required onChange={(e) => setPaymentDetails(e.target.value, 'jazzCash', '')} />
+                            </div>}
+
+                        {payMeth.easypaisa.isSelected &&
+                            <div className='flex flex-col gap-y-1 sm:gap-y-2 text-sm sm:text-base mt-6'>
+                                <label htmlFor="easypaisa" className='font-semibold'>Enter phone number (easypaisa)</label>
+                                <input type="tel" id='easypaisa' name='easypaisa' placeholder='+923121234567' className='border px-2 sm:px-3 py-1 focus-visible:outline-black' maxLength='13' required onChange={(e) => setPaymentDetails(e.target.value, 'easypaisa', '')} />
+                            </div>}
+
+                        {payMeth.bankTransfer.isSelected &&
+                            <div className='grid sm:grid-cols-2 gap-2'>
+                                <div className='flex flex-col gap-y-1 sm:gap-y-2 text-sm sm:text-base'>
+                                    <label htmlFor="cardNumber" className='font-semibold'>Valid Card Number</label>
+                                    <input type="tel" id='cardNumber' name='cardNumber' placeholder='1234 1234 1234 1234' className='border px-2 sm:px-3 py-1 focus-visible:outline-black' minLength={19} maxLength={19} required onChange={(e) => setPaymentDetails(e.target.value, 'bankTransfer', 'cardNumber')} />
+                                </div>
+                                <div className='flex flex-col gap-y-1 sm:gap-y-2 text-sm sm:text-base'>
+                                    <label htmlFor="cvv" className='font-semibold'>CVV</label>
+                                    <input type="tel" id='cvv' name='cvv' placeholder='1234' className='border px-2 sm:px-3 py-1 focus-visible:outline-black' minLength={4} maxLength={4} required onChange={(e) => setPaymentDetails(e.target.value, 'bankTransfer', 'cvv')} />
+                                </div>
+                                <div className='flex flex-col gap-y-1 sm:gap-y-2 text-sm sm:text-base'>
+                                    <label htmlFor="expiryDate" className='font-semibold'>Card Expiry Date</label>
+                                    <input type="date" id='expiryDate' name='expiryDate' className='border px-2 sm:px-3 py-1 focus-visible:outline-black' required onChange={(e) => setPaymentDetails(e.target.value, 'bankTransfer', 'expiryDate')} />
+                                </div>
+                                <div className='flex flex-col gap-y-1 sm:gap-y-2 text-sm sm:text-base'>
+                                    <label htmlFor="otp" className='font-semibold'>OTP</label>
+                                    <input type="tel" id='otp' name='otp' placeholder='1234' className='border px-2 sm:px-3 py-1 focus-visible:outline-black' minLength={4} maxLength={4} required onChange={(e) => setPaymentDetails(e.target.value, 'bankTransfer', 'otp')} />
+                                </div>
+                            </div>}
+
+
                         <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white w-full'>Place order</button>
                     </form>
 
                     <div className='border px-4 py-5 space-y-3 sm:space-y-5 h-fit'>
-                        <h3 className='text-2xl font-bold text-center border-b border-black pb-3'>Order Summary</h3>
+                        <h3 className='text-2xl font-bold text-center'>Order Summary</h3>
                         <p className='font-semibold'>3 Items in cart <a href="" className='float-right text-blue-500 font-bold hover:text-blue-600'>Details</a></p>
                         <hr className='border' />
                         <div className='grid grid-cols-3 items-center mt-2'>

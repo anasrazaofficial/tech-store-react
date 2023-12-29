@@ -75,7 +75,7 @@ const Cart = () => {
 
             <div className='px-5 sm:px-20 py-8 sm:py-14 my-8 sm:my-14 space-y-5 sm:space-y-8 relative'>
                 <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5 relative'>Cart
-                    <Link to='/checkout' className='absolute right-0 top-5 cursor-pointer hover:drop-shadow-lg font-semibold sm:hidden flex gap-x-3 items-center text-[10px]'>Checkout <img src="src\Assets\icons\arrow-right.svg" alt="" /></Link>  </h2>
+                    <Link to='/checkout' className='absolute right-0 top-5 cursor-pointer hover:drop-shadow-xl font-semibold sm:hidden flex gap-x-3 items-center text-[10px]'>Checkout <img src="src\Assets\icons\arrow-right.svg" alt="" /></Link>  </h2>
                 <div className='grid sm:grid-cols-4 gap-5'>
                     <table className='w-full border text-[12px] sm:text-base sm:col-span-3 h-fit'>
                         <thead>
@@ -114,7 +114,7 @@ const Cart = () => {
                         <Link to='/checkout' className='absolute right-0 -top-16 cursor-pointer hover:drop-shadow-lg font-semibold hidden sm:flex gap-x-3 items-center'>Checkout <img src="src\Assets\icons\arrow-right.svg" alt="" /></Link>
                         <div className='space-y-3 text-center border-b-4 pb-2'>
                             <h4 className='text-2xl font-semibold sm:font-bold'>Enter discount coupon</h4>
-                            <input type="text" className='border-2 w-full rounded-lg px-3 py-1' placeholder='Enter Coupon code here' />
+                            <input type="text" className='border-2 w-full rounded-lg px-2 sm:px-3 py-1' placeholder='Enter Coupon code here' />
                             <button type='button' className='px-4 py-3 bg-[--theme-secondary] font-bold rounded-lg w-1/2 hover:bg-[--theme-secondary-hover] transition-colors text-white'>Submit</button>
                         </div>
                         <div className='grid grid-cols-3 items-center mt-2'>
