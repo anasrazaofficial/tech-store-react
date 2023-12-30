@@ -31,7 +31,6 @@ const Home = () => {
                 response.data.length === 0 ? axios.post(`${url}/cart`, product) : null
                 for (let i = 0; i < response.data.length; i++) {
                     const element = response.data[i];
-                    debugger
                     if (element.id === product.id) {
                         const quan = element.quantity
                         axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })

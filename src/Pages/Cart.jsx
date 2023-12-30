@@ -46,7 +46,7 @@ const Cart = () => {
         window.localStorage.setItem('cartData', JSON.stringify(data))
         cartProds.forEach(product => {
             axios.put(`http://localhost:3000/cart/${product.id}`, { ...product, quantity: product.quantity })
-                .then(res => console.log(res))
+                .then(res => console.info(res))
                 .catch(err => console.error(err))
         })
         window.location.href = '/checkout'

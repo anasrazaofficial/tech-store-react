@@ -1,20 +1,5 @@
 {
-  "users": [
-    {
-      "name": "Anas",
-      "email": "anas@gmail.com",
-      "phoneNumber": "+92 322 0279939",
-      "username": "anas123",
-      "dob": "2004-11-04",
-      "country": "Pakistan",
-      "city": "Karachi",
-      "address": "FB area",
-      "password": "11111111",
-      "confirmPassword": "11111111",
-      "isLoggedin": true,
-      "id": 1
-    }
-  ],
+  "users": [],
   "products": [
     {
       "id": 1,
