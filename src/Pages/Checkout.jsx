@@ -5,7 +5,7 @@ import { url } from '../App'
 
 const Checkout = () => {
     const [cartData, setCartData] = useState({})
-    const [users, setUsers] = useState([])
+    const [user, setUser] = useState([])
     const [subtotal, setSubtotal] = useState(0)
     const [payMeth, setPayMeth] = useState({
         jazzCash: {
@@ -39,7 +39,7 @@ const Checkout = () => {
             })
             .catch(err => console.error(err))
         axios.get(`${url}/users`)
-            .then(res => setUsers(res.data))
+            .then(res => res.data.forEach(el => el.isLoggedin ? setUser(el) : null))
             .catch(err => console.error(err))
     }, [])
 
@@ -49,8 +49,23 @@ const Checkout = () => {
         for (let i = 0; i < Object.keys(payMeth).length; i++) {
             const element = Object.keys(payMeth)[i];
             if (payMeth[element].isSelected) {
-                console.log(payMeth);
+                let { username, password, confirmPassword, isLoggedin, id, ...newUser } = user
+                let { isSelected, ...method } = payMeth[element]
+                let obj = {
+                    ...newUser,
+                    userId: user.id,
+                    cart: cartData,
+                    paymentMethod: { [element]: method },
+                    subtotal
+                }
+                axios.post(`${url}/orders`, obj)
+                    .then(() => {
+                        cartData.forEach(data => axios.delete(`${url}/cart/${data.id}`).catch(err => console.error(err)))
+                        setSubtotal(0)
+                        window.location.href = '/'
+                    }).catch(err => console.error(err))
                 paymentSelected = false
+                break
             }
         }
         if (paymentSelected) alert('Select payment method')

@@ -80,74 +80,108 @@
       "quantity": 1
     }
   ],
-  "cart": [
-    {
-      "id": 2,
-      "productName": "Mouse",
-      "url": "src/Assets/product2.png",
-      "price": 400,
-      "quantity": 4
-    },
-    {
-      "id": 1,
-      "productName": "Keyboard",
-      "url": "src/Assets/product1.png",
-      "price": 500,
-      "quantity": 3
-    },
-    {
-      "id": 9,
-      "productName": "Drive",
-      "url": "src/Assets/product9.png",
-      "price": 1050,
-      "quantity": 1
-    },
-    {
-      "id": 7,
-      "productName": "Ram",
-      "url": "src/Assets/product7.png",
-      "price": 350,
-      "quantity": 3
-    }
-  ],
+  "cart": [],
   "orders": [
     {
       "name": "Anas",
       "email": "anas@gmail.com",
-      "phoneNumber": "124125151",
+      "phoneNumber": "+92 322 0279939",
+      "dob": "2004-11-04",
       "country": "Pakistan",
-      "city": "karachi",
-      "address": "fbarea",
-      "paymentMethod": "JazzCash",
-      "products": [
-        {
-          "id": 8,
-          "productName": "Battery",
-          "url": "src/Assets/product8.png",
-          "price": 870,
-          "quantity": 3
-        },
+      "city": "Karachi",
+      "address": "FB area",
+      "userId": 1,
+      "cart": [
         {
           "id": 2,
           "productName": "Mouse",
           "url": "src/Assets/product2.png",
           "price": 400,
+          "quantity": 4
+        },
+        {
+          "id": 1,
+          "productName": "Keyboard",
+          "url": "src/Assets/product1.png",
+          "price": 500,
           "quantity": 3
+        },
+        {
+          "id": 9,
+          "productName": "Drive",
+          "url": "src/Assets/product9.png",
+          "price": 1050,
+          "quantity": 1
+        },
+        {
+          "id": 7,
+          "productName": "Ram",
+          "url": "src/Assets/product7.png",
+          "price": 350,
+          "quantity": 3
+        }
+      ],
+      "paymentMethod": {
+        "bankTransfer": {
+          "details": {
+            "cardNumber": "1231231231231231231",
+            "cvv": "1234",
+            "expiryDate": "2023-12-30",
+            "otp": "6788"
+          }
+        }
+      },
+      "subtotal": 5200,
+      "id": 2
+    },
+    {
+      "name": "Anas",
+      "email": "anas@gmail.com",
+      "phoneNumber": "+92 322 0279939",
+      "dob": "2004-11-04",
+      "country": "Pakistan",
+      "city": "Karachi",
+      "address": "FB area",
+      "userId": 1,
+      "cart": [
+        {
+          "id": 2,
+          "productName": "Mouse",
+          "url": "src/Assets/product2.png",
+          "price": 400,
+          "quantity": 2
         },
         {
           "id": 3,
           "productName": "Webcam",
           "url": "src/Assets/product3.png",
           "price": 750,
-          "quantity": 5
+          "quantity": 1
         },
         {
-          "id": 6,
-          "productName": "Hardisk",
-          "url": "src/Assets/product6.png",
-          "price": 1150,
-          "quantity": 3
-        },
+          "id": 1,
+          "productName": "Keyboard",
+          "url": "src/Assets/product1.png",
+          "price": 500,
+          "quantity": 1
+        }
+      ],
+      "paymentMethod": {
+        "cashOnDelivery": {}
+      },
+      "subtotal": 2050,
+      "id": 3
+    },
+    {
+      "name": "Anas",
+      "email": "anas@gmail.com",
+      "phoneNumber": "+92 322 0279939",
+      "dob": "2004-11-04",
+      "country": "Pakistan",
+      "city": "Karachi",
+      "address": "FB area",
+      "userId": 1,
+      "cart": [
         {
           "id": 5,
           "productName": "Router",
@@ -156,9 +190,11 @@
           "quantity": 2
         }
       ],
-      "total": 14010,
-      "userId": 4,
-      "id": 1
+      "paymentMethod": {
+        "cashOnDelivery": {}
+      },
+      "subtotal": 3000,
+      "id": 4
     }
   ]
 }
