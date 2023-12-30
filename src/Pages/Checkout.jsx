@@ -64,6 +64,14 @@ const Checkout = () => {
                         setSubtotal(0)
                         window.location.href = '/'
                     }).catch(err => console.error(err))
+                debugger
+
+                // Adding Loyalty points to users
+                let points;
+                if (subtotal > 999) points = Number(subtotal.toString().slice(0, subtotal.toString().length - 3))
+                if (user.hasOwnProperty('loyaltyPoints')) points += user.loyaltyPoints
+                axios.put(`${url}/users/${user.id}`, { ...user, loyaltyPoints: points })
+
                 paymentSelected = false
                 break
             }
@@ -187,8 +195,6 @@ const Checkout = () => {
 
                     <div className='border px-4 py-5 space-y-3 sm:space-y-5 h-fit'>
                         <h3 className='text-2xl font-bold text-center'>Order Summary</h3>
-                        <p className='font-semibold'>3 Items in cart <a href="" className='float-right text-blue-500 font-bold hover:text-blue-600'>Details</a></p>
-                        <hr className='border' />
                         <div className='grid grid-cols-3 items-center mt-2'>
                             <h5 className='text-xl font-semibold col-span-2'>Total Amount :</h5>
                             <span>Rs. {subtotal}</span>
