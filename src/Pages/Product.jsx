@@ -23,6 +23,7 @@ const Product = () => {
                         .then(() => window.location.href = '/cart')
                         .catch(err => console.error(err))
                 } else {
+                    let isFound = true
                     for (let i = 0; i < response.data.length; i++) {
                         const element = response.data[i];
                         if (element.id === product.id) {
@@ -32,9 +33,14 @@ const Product = () => {
                                     window.location.href = '/cart'
                                 })
                                 .catch(err => console.error(err))
-                            itemFound = true
+                            isFound = false
                             break
-                        } else itemFound = false
+                        } else isFound = true
+                    }
+                    if (isFound) {
+                        axios.post(`${url}/cart`, product)
+                            .then(() => window.location.href = '/cart')
+                            .catch(err => console.error(err))
                     }
                 }
             }).catch(err => console.error(err))
