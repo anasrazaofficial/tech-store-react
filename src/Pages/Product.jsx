@@ -18,18 +18,27 @@ const Product = () => {
     const addToCart = () => {
         axios.get(`${url}/cart`)
             .then(response => {
+                debugger
                 let itemFound = false
-                response.data.length === 0 ? axios.post(`${url}/cart`, product) : null
-                for (let i = 0; i < response.data.length; i++) {
-                    const element = response.data[i];
-                    if (element.id === product.id) {
-                        const quan = element.quantity
-                        axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
-                        itemFound = true
-                        break
-                    } else itemFound = false
+                if (response.data.length === 0) {
+                    axios.post(`${url}/cart`, product)
+                        .then(() => window.location.href = '/cart')
+                        .catch(err => console.error(err))
+                } else {
+                    for (let i = 0; i < response.data.length; i++) {
+                        const element = response.data[i];
+                        if (element.id === product.id) {
+                            const quan = element.quantity
+                            axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
+                                .then(() => {
+                                    window.location.href = '/cart'
+                                })
+                                .catch(err => console.error(err))
+                            itemFound = true
+                            break
+                        } else itemFound = false
+                    }
                 }
-                if (!itemFound) axios.post(`${url}/cart`, product)
             }).catch(err => console.error(err))
     }
 
@@ -46,13 +55,11 @@ const Product = () => {
                 </div>
                 <div className='space-y-5 sm:space-y-8'>
                     <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5'>{product.productName}</h2>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil totam vel voluptates similique quam dolore commodi doloremque facilis saepe esse voluptatem non dolorum ut aperiam, rem veniam. Iste, sit repellat.
-                        <div className='text-lg text-gray-700 font-bold mt-2'>Rs. {product.price}</div>
+                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil totam vel voluptates similique quam dolore commodi doloremque facilis saepe esse voluptatem non dolorum ut aperiam, rem veniam. Iste, sit repellat. <br />
+                        <span className='text-lg text-gray-700 font-bold mt-2'>Rs. {product.price}</span>
                     </p>
 
-                    <button>
-                        <Link to='/cart' className='bg-[--theme-secondary] font-semibold sm:font-bold py-2 sm:py-3 px-8 sm:px-10 hover:bg-[--theme-secondary-hover] transition-colors text-white' onClick={addToCart}>Add to cart</Link>
-                    </button>
+                    <button className='bg-[--theme-secondary] font-semibold sm:font-bold py-2 sm:py-3 px-8 sm:px-10 hover:bg-[--theme-secondary-hover] transition-colors text-white' onClick={addToCart}>Add to cart</button>
                 </div>
             </div>
 

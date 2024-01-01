@@ -7,6 +7,7 @@ const Checkout = () => {
     const [cartData, setCartData] = useState({})
     const [user, setUser] = useState([])
     const [subtotal, setSubtotal] = useState(0)
+    const [discount, setDiscount] = useState(window.localStorage.getItem('discount'))
     const [payMeth, setPayMeth] = useState({
         jazzCash: {
             isSelected: false,
@@ -36,6 +37,7 @@ const Checkout = () => {
             .then(res => {
                 setCartData(res.data)
                 setSubtotal(res.data.reduce((total, item) => total += (item.price * item.quantity), 0))
+
             })
             .catch(err => console.error(err))
         axios.get(`${url}/users`)
@@ -56,21 +58,25 @@ const Checkout = () => {
                     userId: user.id,
                     cart: cartData,
                     paymentMethod: { [element]: method },
-                    subtotal
+                    subtotal,
+                    discount,
+                    total: Math.round(subtotal - discount)
                 }
                 axios.post(`${url}/orders`, obj)
                     .then(() => {
                         cartData.forEach(data => axios.delete(`${url}/cart/${data.id}`).catch(err => console.error(err)))
-                        setSubtotal(0)
+                        window.localStorage.removeItem('discount')
                         window.location.href = '/'
                     }).catch(err => console.error(err))
-                debugger
 
+                    
                 // Adding Loyalty points to users
                 let points;
-                if (subtotal > 999) points = Number(subtotal.toString().slice(0, subtotal.toString().length - 3))
-                if (user.hasOwnProperty('loyaltyPoints')) points += user.loyaltyPoints
-                axios.put(`${url}/users/${user.id}`, { ...user, loyaltyPoints: points })
+                if (subtotal > 999) {
+                    points = Number(subtotal.toString().slice(0, subtotal.toString().length - 3))
+                    if (user.hasOwnProperty('loyaltyPoints')) points += user.loyaltyPoints
+                    axios.put(`${url}/users/${user.id}`, { ...user, loyaltyPoints: points })
+                }
 
                 paymentSelected = false
                 break
@@ -201,11 +207,11 @@ const Checkout = () => {
                         </div>
                         <div className='grid grid-cols-3 items-center mt-1'>
                             <h5 className='text-xl font-semibold col-span-2'>Discount % :</h5>
-                            <span>0%</span>
+                            <span>{((discount / (subtotal)) * 100).toFixed(2)}%</span>
                         </div>
                         <div className='grid grid-cols-3 items-center mt-1'>
                             <h5 className='text-xl font-semibold col-span-2'>Discount Price :</h5>
-                            <span>Rs. 0</span>
+                            <span>Rs. {discount}</span>
                         </div>
                         <div className='grid grid-cols-3 items-center mt-1'>
                             <h5 className='text-xl font-semibold col-span-2'>Delivery charges :</h5>
@@ -213,7 +219,7 @@ const Checkout = () => {
                         </div>
                         <div className='grid grid-cols-3 items-center border-t-2 mt-2 pt-2'>
                             <h5 className='text-xl font-semibold col-span-2'>Total Price :</h5>
-                            <span>Rs. {subtotal + 100}</span>
+                            <span>Rs. {subtotal - discount + 100}</span>
                         </div>
                     </div>
                 </div>

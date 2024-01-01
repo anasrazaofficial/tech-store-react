@@ -23,6 +23,10 @@ const Navbar = () => {
 
     const logout = () => {
         window.localStorage.clear()
+        axios.get(`${url}/cart`)
+            .then(res => {
+                res.data.forEach(cart => axios.delete(`${url}/cart/${cart.id}`));
+            }).catch(err => console.error(err))
         axios.get(`${url}/users`)
             .then((res) => {
                 res.data.map(el => {

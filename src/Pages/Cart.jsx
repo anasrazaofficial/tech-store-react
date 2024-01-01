@@ -44,16 +44,13 @@ const Cart = () => {
     }
 
     const submit = () => {
-        let data = {
-            products: cartProds,
-            total: subtotal
-        }
-        window.localStorage.setItem('cartData', JSON.stringify(data))
+        window.localStorage.setItem('discount', discount.toFixed(2))
         cartProds.forEach(product => {
             axios.put(`http://localhost:3000/cart/${product.id}`, { ...product, quantity: product.quantity })
                 .then(res => console.info(res))
                 .catch(err => console.error(err))
         })
+        axios.put(`${url}/users/${user.id}`, { ...user, loyaltyPoints: user.loyaltyPoints - points })
         window.location.href = '/checkout'
     }
 
@@ -73,15 +70,12 @@ const Cart = () => {
 
     const usePoints = (e) => {
         e.preventDefault()
-        let confirmation = confirm("Are you sure you want to use your loyalty points? This action cannot be undone")
-        if (confirmation) {
-            if (user.loyaltyPoints > points) {
-                setDiscount((points * subtotal) / 100)
-                setPoints(user.loyaltyPoints - points)
-                axios.put(`${url}/users/${user.id}`, { ...user, loyaltyPoints: points })
-                    .then(res => setPoints(prev => 0))
-                    .catch(err => console.error(err))
-            } else alert("You don't enough Loyalty Points")
+        if (user.loyaltyPoints >= points && points > 9) {
+            setDiscount(subtotal - (subtotal - (points / 10)))
+            e.target.children[2].value = ''
+        } else {
+            if (user.loyaltyPoints <= points) alert("You don't have enough points")
+            else if (points < 9) alert("You must enter points more than 9")
         }
     }
 
@@ -131,7 +125,8 @@ const Cart = () => {
                     <div className='border rounded-xl p-3 sm:p-5 h-fit relative'>
                         <form onSubmit={usePoints} className='space-y-3 text-center border-b-4 pb-2'>
                             <h4 className='text-2xl font-semibold sm:font-bold'>Use Loyalty Points</h4>
-                            <input type="number" className='border-2 w-full rounded-lg px-2 sm:px-3 py-1' placeholder='Enter Loyalty points you want to use' min={1} required onChange={(e) => setPoints(e.target.value)} />
+                            <center className='text-sm text-gray-600'>10 points = Rs. 1</center>
+                            <input type="number" className='border-2 w-full rounded-lg px-2 sm:px-3 py-1' placeholder='Enter Loyalty points you want to use' min={1} required onChange={(e) => setPoints(Number(e.target.value))} />
                             <button type='submit' className='px-4 py-3 bg-[--theme-secondary] font-bold rounded-lg w-1/2 hover:bg-[--theme-secondary-hover] transition-colors text-white'>Submit</button>
                         </form>
                         <div className='grid grid-cols-3 items-center mt-2'>
@@ -140,15 +135,15 @@ const Cart = () => {
                         </div>
                         <div className='grid grid-cols-3 items-center mt-1'>
                             <h5 className='text-xl font-semibold col-span-2'>Discount % :</h5>
-                            <span>0%</span>
+                            <span>{discount === 0 ? 0 : ((discount / (subtotal + discount)) * 100).toFixed(2)}%</span>
                         </div>
                         <div className='grid grid-cols-3 items-center mt-1'>
                             <h5 className='text-xl font-semibold col-span-2'>Discount Price :</h5>
-                            <span>Rs. {discount}</span>
+                            <span>Rs. {discount.toFixed(2)}</span>
                         </div>
                         <div className='grid grid-cols-3 items-center border-t-2 mt-2 pt-2'>
                             <h5 className='text-xl font-semibold col-span-2'>Total Amount :</h5>
-                            <span>Rs. {subtotal}</span>
+                            <span>Rs. {subtotal - discount}</span>
                         </div>
                         <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white mt-8 text-center w-full' onClick={submit}>Proceed to Checkout</button>
                     </div>
