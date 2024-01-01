@@ -14,7 +14,6 @@ const Login = () => {
         e.preventDefault()
         axios.get('http://localhost:3000/users')
             .then((res) => {
-                console.info(res)
                 if (res.data.length !== 0) {
                     let invalid = true
                     for (let i = 0; i < res.data.length; i++) {
