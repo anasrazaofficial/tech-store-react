@@ -25,8 +25,7 @@ const Signup = () => {
 
         const post = () => {
             axios.post(`${url}/users`, user)
-                .then((resp) => {
-                    console.info(resp)
+                .then(() => {
                     window.localStorage.setItem('active', 'true')
                     window.location.href = '/'
                 })
