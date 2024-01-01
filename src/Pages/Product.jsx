@@ -18,8 +18,6 @@ const Product = () => {
     const addToCart = () => {
         axios.get(`${url}/cart`)
             .then(response => {
-                debugger
-                let itemFound = false
                 if (response.data.length === 0) {
                     axios.post(`${url}/cart`, product)
                         .then(() => window.location.href = '/cart')
