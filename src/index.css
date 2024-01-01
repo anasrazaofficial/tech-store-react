@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+
+:root {
+  --theme-primary: #4842a2;
+  --bg-primary-hover:#302c6d;
+  --theme-secondary: #48ca95;
+  --theme-secondary-hover: #08ae6a;
+}
+
+.bg-banner {
+  background-image: url('./Assets/banner.jpg')
+}
+
+.bg-footer {
+  background-image: url('./Assets/footer.jpg')
+}
+
+
+@tailwind utilities;

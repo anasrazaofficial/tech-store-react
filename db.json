@@ -1,0 +1,70 @@
+{
+  "users": [],
+  "products": [
+    {
+      "id": 1,
+      "productName": "Keyboard",
+      "url": "src/Assets/product1.png",
+      "price": 500,
+      "quantity": 1
+    },
+    {
+      "id": 2,
+      "productName": "Mouse",
+      "url": "src/Assets/product2.png",
+      "price": 400,
+      "quantity": 1
+    },
+    {
+      "id": 3,
+      "productName": "Webcam",
+      "url": "src/Assets/product3.png",
+      "price": 750,
+      "quantity": 1
+    },
+    {
+      "id": 4,
+      "productName": "Speaker",
+      "url": "src/Assets/product4.png",
+      "price": 940,
+      "quantity": 1
+    },
+    {
+      "id": 5,
+      "productName": "Router",
+      "url": "src/Assets/product5.png",
+      "price": 1500,
+      "quantity": 1
+    },
+    {
+      "id": 6,
+      "productName": "Hardisk",
+      "url": "src/Assets/product6.png",
+      "price": 1150,
+      "quantity": 1
+    },
+    {
+      "id": 7,
+      "productName": "Ram",
+      "url": "src/Assets/product7.png",
+      "price": 350,
+      "quantity": 1
+    },
+    {
+      "id": 8,
+      "productName": "Battery",
+      "url": "src/Assets/product8.png",
+      "price": 870,
+      "quantity": 1
+    },
+    {
+      "id": 9,
+      "productName": "Drive",
+      "url": "src/Assets/product9.png",
+      "price": 1050,
+      "quantity": 1
+    }
+  ],
+  "cart": [],
+  "orders": []
+}
