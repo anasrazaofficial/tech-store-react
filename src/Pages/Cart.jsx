@@ -107,7 +107,7 @@ const Cart = () => {
                                 <td className='py-3 text-center border-x-2'>{i + 1}</td>
                                 <td className='py-3 text-center border-x-2'>{prod.id}</td>
                                 <td className='py-3 text-center border-x-2'>{prod.productName}</td>
-                                <td className='py-3 text-center border-x-2'>
+                                <td className='py-3 text-center border-x-2 select-none'>
                                     <div>
                                         <span className='px-1 sm:px-2 bg-[--theme-secondary] text-white sm:pb-1 cursor-pointer hover:bg-[--theme-secondary-hover]' onClick={() => decreaseQuantity(prod)}>-</span>
                                         <span className='px-2 sm:px-4'>{prod.quantity}</span>
