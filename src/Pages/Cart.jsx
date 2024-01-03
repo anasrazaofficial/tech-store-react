@@ -2,19 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { Footer, Navbar } from '../Components'
 import axios from 'axios'
 import { url } from '../App'
+import { useUserContext } from '../Contexts/UserContext'
 
 const Cart = () => {
+    const { updateUser, user } = useUserContext()
     const [cartProds, setCartProds] = useState([])
     const [subtotal, setSubtotal] = useState(0)
     const [points, setPoints] = useState(null)
     const [discount, setDiscount] = useState(0)
-    const [user, setUser] = useState({})
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        axios.get(`${url}/users`)
-            .then(res => res.data.forEach(el => el.isLoggedin ? setUser(el) : null))
-            .catch(err => console.error(err))
         getProducts()
     }, [])
 
@@ -38,7 +36,7 @@ const Cart = () => {
     }
 
     const deleteProduct = (id) => {
-        axios.delete(`http://localhost:3000/cart/${id}`)
+        axios.delete(`${url}/cart/${id}`)
             .then(() => getProducts())
             .catch(err => console.error(err))
     }
@@ -46,11 +44,11 @@ const Cart = () => {
     const submit = () => {
         window.localStorage.setItem('discount', discount.toFixed(2))
         cartProds.forEach(product => {
-            axios.put(`http://localhost:3000/cart/${product.id}`, { ...product, quantity: product.quantity })
+            axios.put(`${url}/cart/${product.id}`, { ...product, quantity: product.quantity })
                 .then(res => console.info(res))
                 .catch(err => console.error(err))
         })
-        axios.put(`${url}/users/${user.id}`, { ...user, loyaltyPoints: user.loyaltyPoints - points })
+        updateUser(user.id, { ...user, loyaltyPoints: user.loyaltyPoints - points })
         window.location.href = '/checkout'
     }
 
@@ -70,11 +68,12 @@ const Cart = () => {
 
     const usePoints = (e) => {
         e.preventDefault()
+        debugger
         if (user.loyaltyPoints >= points && points > 9) {
             setDiscount(subtotal - (subtotal - (points / 10)))
             e.target.children[2].value = ''
         } else {
-            if (user.loyaltyPoints <= points) alert("You don't have enough points")
+            if (user.loyaltyPoints <= points || user.loyaltyPoints === undefined) alert("You don't have enough points")
             else if (points < 9) alert("You must enter points more than 9")
         }
     }

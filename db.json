@@ -183,6 +183,80 @@
       "discount": "1.40",
       "total": 399,
       "id": 3
+    },
+    {
+      "name": "Anas Raza",
+      "email": "raza@gmail.com",
+      "phoneNumber": "+92 322 1233456",
+      "dob": "2024-01-03",
+      "country": "Pakistan",
+      "city": "Karachi",
+      "address": "FB area",
+      "userId": 1,
+      "cart": [
+        {
+          "id": 3,
+          "productName": "Webcam",
+          "url": "src/Assets/product3.png",
+          "price": 750,
+          "quantity": 3
+        },
+        {
+          "id": 2,
+          "productName": "Mouse",
+          "url": "src/Assets/product2.png",
+          "price": 400,
+          "quantity": 1
+        },
+        {
+          "id": 1,
+          "productName": "Keyboard",
+          "url": "src/Assets/product1.png",
+          "price": 500,
+          "quantity": 3
+        }
+      ],
+      "paymentMethod": {
+        "bankTransfer": {
+          "details": {
+            "cardNumber": "2242342342342424242",
+            "cvv": "1234",
+            "expiryDate": "2024-01-03",
+            "otp": "1241"
+          }
+        }
+      },
+      "subtotal": 4150,
+      "discount": "0.00",
+      "total": 4150,
+      "id": 4
+    },
+    {
+      "name": "Anas Raza",
+      "email": "raza@gmail.com",
+      "phoneNumber": "+92 322 1233456",
+      "dob": "2024-01-03",
+      "country": "Pakistan",
+      "city": "Karachi",
+      "address": "FB area",
+      "loyaltyPoints": 4,
+      "userId": 1,
+      "cart": [
+        {
+          "id": 3,
+          "productName": "Webcam",
+          "url": "src/Assets/product3.png",
+          "price": 750,
+          "quantity": 1
+        }
+      ],
+      "paymentMethod": {
+        "cashOnDelivery": {}
+      },
+      "subtotal": 750,
+      "discount": "0.00",
+      "total": 750,
+      "id": 5
     }
   ]
 }

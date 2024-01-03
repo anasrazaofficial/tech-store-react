@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { Navbar, Footer } from '../Components'
 import axios from 'axios';
 import { url } from '../App';

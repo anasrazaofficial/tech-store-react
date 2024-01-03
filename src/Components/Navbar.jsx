@@ -2,38 +2,27 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react'
 import { NavLink, Link } from 'react-router-dom';
 import { url } from '../App';
+import { useUserContext } from '../Contexts/UserContext';
 
 const Navbar = () => {
+    const { users, updateUser } = useUserContext()
     const [nav, setNav] = useState(false)
+    const [loggedin, setLoggedin] = useState(true)
 
     useEffect(() => {
-        const updateNavState = () => {
-            if (window.innerWidth < 640) {
-                setNav(false);
-            } else {
-                setNav(true);
-            }
-        };
+        // setLoggedin(() => users.some(user => user.isLoggedin === true))
+        const updateNavState = () => window.innerWidth < 640 ? setNav(false) : setNav(true);
         updateNavState();
         window.addEventListener('resize', updateNavState);
-        return () => {
-            window.removeEventListener('resize', updateNavState);
-        };
+        return () => window.removeEventListener('resize', updateNavState);
     }, []);
 
     const logout = () => {
-        window.localStorage.clear()
         axios.get(`${url}/cart`)
-            .then(res => {
-                res.data.forEach(cart => axios.delete(`${url}/cart/${cart.id}`));
-            }).catch(err => console.error(err))
-        axios.get(`${url}/users`)
-            .then((res) => {
-                res.data.map(el => {
-                    axios.put(`${url}/users/${el.id}`, { ...el, isLoggedin: false })
-                })
-                window.location.href = '/'
-            }).catch(err => console.error(err))
+            .then(res => res.data.forEach(cart => axios.delete(`${url}/cart/${cart.id}`)))
+            .catch(err => console.error(err))
+        users.map(el => updateUser(el.id, { ...el, isLoggedin: false }))
+        window.location.href = '/login'
     }
 
     return (
@@ -57,8 +46,11 @@ const Navbar = () => {
                     <li><NavLink to='/contact' className={({ isActive }) => `cursor-pointer hover:text-[--theme-secondary] transition-colors ${isActive ? 'sm:text-[--theme-secondary] text-[--theme-primary]' : ''}`}>Contact</NavLink></li >
                 </ul >
                 <div>
-                    <button className='mt-5 sm:mt-0 w-full sm:w-auto py-1 px-3 rounded-l-md cursor-pointer transition-colors bg-[--theme-secondary] hover:bg-[--theme-secondary-hover]' onClick={logout}>Logout</button>
-                    <button className='mt-5 sm:mt-0 w-full sm:w-auto py-1 px-3 rounded-r-md border-l cursor-pointer  transition-colors bg-[--theme-secondary] hover:bg-[--theme-secondary-hover]' onClick={() => window.location.href = '/login'}>Login</button>
+                    {/* {loggedin ?
+                        <button className='mt-5 sm:mt-0 w-full sm:w-auto py-1 sm:py-2 px-6 rounded-md cursor-pointer transition-colors bg-[--theme-secondary] hover:bg-[--theme-secondary-hover]' onClick={logout}>Logout</button> :
+                        <button className='mt-5 sm:mt-0 w-full sm:w-auto py-1 sm:py-2 px-6 rounded-md border-l cursor-pointer  transition-colors bg-[--theme-secondary] hover:bg-[--theme-secondary-hover]' onClick={() => window.location.href = '/login'}>Login</button>} */}
+                    <button className={`mt-5 sm:mt-0 w-full sm:w-auto py-1 px-3 rounded-l-md cursor-pointer transition-colors bg-[--theme-secondary] hover:bg-[--theme-secondary-hover]`} onClick={logout}>Logout</button>
+                    <button className={`mt-5 sm:mt-0 w-full sm:w-auto py-1 px-3 rounded-r-md border-l cursor-pointer  transition-colors bg-[--theme-secondary] hover:bg-[--theme-secondary-hover]`} onClick={() => window.location.href = '/login'}>Login</button>
                 </div>
             </div >}
         </nav >

@@ -5,19 +5,19 @@ import { url } from '../App'
 
 const UserContext = createContext()
 
-export const ContextProvider = ({ children, id, obj }) => {
+export const ContextProvider = ({ children }) => {
     const [users, setUsers] = useState([])
+    const [user, setUser] = useState({})
     useEffect(() => {
         axios.get(`${url}/users`)
-            .then(res => setUsers(res.data))
+            .then(res => {
+                setUsers(res.data)
+                res.data.forEach(user => user.isLoggedin ? setUser(user) : null)
+            })
             .catch(err => console.error(err))
     }, [])
 
-    const getUser = () => {
-        axios.get(`${url}/users/${id}`)
-            .then(res => res.data)
-            .catch(err => console.error(err))
-    }
+
     const addUser = (obj) => {
         axios.post(`${url}/users`, obj)
             .then(res => res.data)
@@ -29,7 +29,7 @@ export const ContextProvider = ({ children, id, obj }) => {
             .catch(err => console.error(err))
     }
     return (
-        <UserContext.Provider value={{ users, getUser, addUser, updateUser }} >
+        <UserContext.Provider value={{ users, user, addUser, updateUser }} >
             {children}
         </UserContext.Provider>
     )

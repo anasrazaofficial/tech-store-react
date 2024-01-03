@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Navbar, Footer } from '../Components'
 import axios from 'axios'
 import { url } from '../App'
+import { useUserContext } from '../Contexts/UserContext'
 
 const Checkout = () => {
+    const { updateUser, user } = useUserContext()
     const [cartData, setCartData] = useState({})
-    const [user, setUser] = useState([])
     const [subtotal, setSubtotal] = useState(0)
-    const [discount, setDiscount] = useState(window.localStorage.getItem('discount'))
+    const discount = window.localStorage.getItem('discount')
     const [payMeth, setPayMeth] = useState({
         jazzCash: {
             isSelected: false,
@@ -33,16 +34,10 @@ const Checkout = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        axios.get(`${url}/cart`)
-            .then(res => {
-                setCartData(res.data)
-                setSubtotal(res.data.reduce((total, item) => total += (item.price * item.quantity), 0))
-
-            })
-            .catch(err => console.error(err))
-        axios.get(`${url}/users`)
-            .then(res => res.data.forEach(el => el.isLoggedin ? setUser(el) : null))
-            .catch(err => console.error(err))
+        axios.get(`${url}/cart`).then(res => {
+            setCartData(res.data)
+            setSubtotal(res.data.reduce((total, item) => total += (item.price * item.quantity), 0))
+        }).catch(err => console.error(err))
     }, [])
 
     const submit = (e) => {
@@ -69,13 +64,13 @@ const Checkout = () => {
                         window.location.href = '/'
                     }).catch(err => console.error(err))
 
-                    
+
                 // Adding Loyalty points to users
                 let points;
                 if (subtotal > 999) {
                     points = Number(subtotal.toString().slice(0, subtotal.toString().length - 3))
                     if (user.hasOwnProperty('loyaltyPoints')) points += user.loyaltyPoints
-                    axios.put(`${url}/users/${user.id}`, { ...user, loyaltyPoints: points })
+                    updateUser(user.id, { ...user, loyaltyPoints: points })
                 }
 
                 paymentSelected = false

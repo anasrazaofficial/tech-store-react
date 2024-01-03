@@ -21,6 +21,7 @@ function App() {
       getCartItems()
     }, 5000)
   }, [])
+
   const getCartItems = () => {
     axios.get(`${url}/cart`)
       .then(res => {
