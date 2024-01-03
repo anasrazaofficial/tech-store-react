@@ -1,9 +1,9 @@
-import { info } from 'autoprefixer'
-import axios from 'axios'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useUserContext } from '../Contexts/UserContext'
 
 const Login = () => {
+    const { users, updateUser } = useUserContext()
     const [pass, setPass] = useState(false)
     const [user, setUser] = useState({
         username: '',
@@ -12,27 +12,21 @@ const Login = () => {
 
     const loginUser = (e) => {
         e.preventDefault()
-        axios.get('http://localhost:3000/users')
-            .then((res) => {
-                console.info(res)
-                if (res.data.length !== 0) {
-                    let invalid = true
-                    for (let i = 0; i < res.data.length; i++) {
-                        const element = res.data[i];
-                        if (element.username === user.username && element.password == user.password) {
-                            axios.put(`http://localhost:3000/users/${element.id}`, { ...element, isLoggedin: true })
-                            localStorage.setItem('active', 'true')
-                            invalid = false
-                            window.location.href = '/'
-                            break
-                        }
-                    }
-                    invalid ? alert("Invalid credentials") : null
-                } else {
-                    alert("Invalid credentials")
+        let invalid = true
+        if (users.length !== 0) {
+            for (let i = 0; i < users.length; i++) {
+                const element = users[i];
+                if (element.username === user.username && element.password == user.password) {
+                    users.forEach(e => updateUser(e.id, { ...e, isLoggedin: false }))
+                    updateUser(element.id, { ...element, isLoggedin: true })
+                    invalid = false
+                    window.location.href = '/'
+                    break
                 }
-            })
-            .catch((err) => console.error(err))
+            }
+        }
+        if (invalid) alert("Invalid credentials")
+
     }
 
     return (

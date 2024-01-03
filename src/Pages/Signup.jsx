@@ -1,9 +1,9 @@
-import axios from 'axios'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { url } from '../App'
+import { useUserContext } from '../Contexts/UserContext'
 
 const Signup = () => {
+    const { users, addUser, updateUser } = useUserContext()
     const [user, setUser] = useState({
         name: '',
         email: '',
@@ -20,44 +20,32 @@ const Signup = () => {
     const [pass, setPass] = useState(false)
     const [conPass, setConPass] = useState(false)
 
+    
     const signupUser = (e) => {
         e.preventDefault()
 
-        const post = () => {
-            axios.post(`${url}/users`, user)
-                .then((resp) => {
-                    console.info(resp)
-                    window.localStorage.setItem('active', 'true')
-                    window.location.href = '/'
-                })
-                .catch((err) => console.error(err))
-        }
-
-        axios.get(`${url}/users`)
-            .then((res) => {
-                if (user.password === user.confirmPassword) {
-                    if (res.data.length === 0) {
-                        post()
-                    } else {
-                        let userFound = true
-                        for (let i = 0; i < res.data.length; i++) {
-                            const e = res.data[i];
-                            if (e.username !== user.username && e.email !== user.email) userFound = true
-                            else {
-                                alert('Username or email not available')
-                                userFound = false
-                                break
-                            }
-                        }
-                        if (userFound) {
-                            res.data.forEach(e => axios.put(`http://localhost:3000/users/${e.id}`, { ...e, isLoggedin: false }));
-                            post()
-                        }
+        if (user.password === user.confirmPassword) {
+            if (users.length === 0) {
+                addUser()
+                window.location.href = '/'
+            } else {
+                let userFound = true
+                for (let i = 0; i < users.length; i++) {
+                    const e = users[i];
+                    if (e.username !== user.username && e.email !== user.email) userFound = true
+                    else {
+                        alert('Username or email not available')
+                        userFound = false
+                        break
                     }
-                } else {
-                    alert("Password confrimation failed!")
                 }
-            }).catch((err) => console.error(err))
+                if (userFound) {
+                    users.forEach(e => updateUser(e.id, { ...e, isLoggedin: false }))
+                    addUser(user)
+                    window.location.href = '/'
+                }
+            }
+        } else alert("Password confrimation failed!")
     }
 
     return (
