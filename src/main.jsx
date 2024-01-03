@@ -13,6 +13,7 @@ import Product from './Pages/Product'
 import Checkout from './Pages/Checkout'
 import Login from './Pages/Login'
 import Signup from './Pages/Signup'
+import { CartContextProvider } from './Contexts/CartContext'
 
 
 const routes = createBrowserRouter(
@@ -34,6 +35,8 @@ const routes = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
-  <RouterProvider router={routes} />
+  <CartContextProvider>
+    <RouterProvider router={routes} />
+  </CartContextProvider>
   // </React.StrictMode>,
 )
