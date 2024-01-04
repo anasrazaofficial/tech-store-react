@@ -297,10 +297,10 @@
       "paymentMethod": {
         "cashOnDelivery": {}
       },
-      "subtotal": 750,
+      "subtotal": 0,
       "discount": "0.00",
-      "total": 750,
-      "id": 5
+      "total": 0,
+      "id": 6
     }
   ]
 }

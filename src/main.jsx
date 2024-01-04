@@ -14,6 +14,7 @@ import Checkout from './Pages/Checkout'
 import Login from './Pages/Login'
 import Signup from './Pages/Signup'
 import { CartContextProvider } from './Contexts/CartContext'
+import { UserContextProvider } from './Contexts/UserContext'
 
 
 const routes = createBrowserRouter(
@@ -35,8 +36,10 @@ const routes = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
-  <CartContextProvider>
-    <RouterProvider router={routes} />
-  </CartContextProvider>
+  <UserContextProvider>
+    <CartContextProvider>
+      <RouterProvider router={routes} />
+    </CartContextProvider>
+  </UserContextProvider>
   // </React.StrictMode>,
 )

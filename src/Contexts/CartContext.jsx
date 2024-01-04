@@ -17,7 +17,7 @@ export const CartContextProvider = ({ children }) => {
 
     const addProduct = (obj) => {
         axios.post(`${url}/cart`, obj)
-            .then(res => console.log(res))
+            .then(res => console.info(res))
             .catch(err => console.error(err))
     }
 
@@ -29,7 +29,7 @@ export const CartContextProvider = ({ children }) => {
 
     const updateProduct = (id, obj) => {
         axios.put(`${url}/cart/${id}`, obj)
-            .then(res => console.log(res))
+            .then(res => console.info(res))
             .catch(err => console.error(err))
     }
 

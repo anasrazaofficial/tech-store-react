@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useUserContext } from '../Contexts/UserContext'
+import { UseUserContext } from '../Contexts/UserContext'
 
 const Login = () => {
-    const { users, updateUser } = useUserContext()
+    const { users, updateUser } = UseUserContext()
     const [pass, setPass] = useState(false)
     const [user, setUser] = useState({
         username: '',

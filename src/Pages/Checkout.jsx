@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Navbar, Footer } from '../Components'
 import axios from 'axios'
 import { url } from '../App'
-import { useUserContext } from '../Contexts/UserContext'
+import { UseUserContext } from '../Contexts/UserContext'
 import { UseCartContext } from '../Contexts/CartContext'
 
 const Checkout = () => {
     const { cart, deleteProduct } = UseCartContext()
-    const { updateUser, user } = useUserContext()
+    const { updateUser, user } = UseUserContext()
     const [subtotal, setSubtotal] = useState(0)
     const discount = window.localStorage.getItem('discount')
     const [payMeth, setPayMeth] = useState({
@@ -32,12 +32,12 @@ const Checkout = () => {
             isSelected: false
         }
     })
+
     window.addEventListener('load', () => setSubtotal(cart.reduce((total, item) => total += (item.price * item.quantity), 0)))
     useEffect(() => window.scrollTo(0, 0), [])
 
     const submit = (e) => {
         e.preventDefault()
-        debugger
         let paymentSelected = true
         for (let i = 0; i < Object.keys(payMeth).length; i++) {
             const element = Object.keys(payMeth)[i];
@@ -187,8 +187,11 @@ const Checkout = () => {
                             </div>}
 
 
-                        <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white w-full'>Place order</button>
+                        <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white w-full disabled:bg-gray-200 disabled:text-gray-400' disabled={cart.length === 0}>Place order</button>
                     </form>
+
+
+
 
                     <div className='border px-4 py-5 space-y-3 sm:space-y-5 h-fit'>
                         <h3 className='text-2xl font-bold text-center'>Order Summary</h3>

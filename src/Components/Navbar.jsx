@@ -1,13 +1,11 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react'
 import { NavLink, Link } from 'react-router-dom';
-import { url } from '../App';
-import { useUserContext } from '../Contexts/UserContext';
+import { UseUserContext } from '../Contexts/UserContext';
 import { UseCartContext } from '../Contexts/CartContext';
 
 const Navbar = () => {
     const { cart, deleteProduct } = UseCartContext()
-    const { users, updateUser } = useUserContext()
+    const { users, updateUser } = UseUserContext()
     const [nav, setNav] = useState(false)
     // const [loggedin, setLoggedin] = useState(true)
 

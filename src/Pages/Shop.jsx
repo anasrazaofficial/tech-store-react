@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { url } from '../App'
 import { UseCartContext } from '../Contexts/CartContext';
+import { UseUserContext } from '../Contexts/UserContext'
 
 const Shop = () => {
+    const { user } = UseUserContext()
     const { cart, addProduct, updateProduct } = UseCartContext()
     const [added, setAdded] = useState([])
     const [products, setProducts] = useState([])
@@ -20,28 +22,32 @@ const Shop = () => {
     }, [])
 
     const addToCart = (i, product) => {
-        setAdded((prevAdded) => {
-            const newAdded = [...prevAdded];
-            newAdded[i] = true;
-            return newAdded;
-        });
-        let itemFound = false
-        cart.length === 0 ? addProduct(product) : null
-        for (let i = 0; i < cart.length; i++) {
-            const element = cart[i];
-            if (element.id === product.id) {
-                const quan = element.quantity
-                updateProduct(product.id, { ...product, quantity: quan + 1 })
-                itemFound = true
-                break
-            } else itemFound = false
+        if (Object.keys(user).length !== 0) {
+            setAdded((prevAdded) => {
+                const newAdded = [...prevAdded];
+                newAdded[i] = true;
+                return newAdded;
+            });
+            let itemFound = false
+            cart.length === 0 ? addProduct(product) : null
+            for (let i = 0; i < cart.length; i++) {
+                const element = cart[i];
+                if (element.id === product.id) {
+                    const quan = element.quantity
+                    updateProduct(product.id, { ...product, quantity: quan + 1 })
+                    itemFound = true
+                    break
+                } else itemFound = false
+            }
+            if (!itemFound) addProduct(product)
+        } else {
+            let confirmation = confirm("You cannot proceed with the purchase until you are logged in. Would you like to log in now?")
+            if (confirmation) window.location.href = '/login'
         }
-        if (!itemFound) addProduct(product)
     }
 
     return (
         <div>
-
 
             <header className='bg-banner px-5 sm:px-20'>
                 <Navbar />

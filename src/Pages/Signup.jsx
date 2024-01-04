@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useUserContext } from '../Contexts/UserContext'
+import { UseUserContext } from '../Contexts/UserContext'
 
 const Signup = () => {
-    const { users, addUser, updateUser } = useUserContext()
+    const { users, addUser, updateUser } = UseUserContext()
     const [user, setUser] = useState({
         name: '',
         email: '',

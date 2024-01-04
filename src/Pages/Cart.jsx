@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Footer, Navbar } from '../Components'
 import axios from 'axios'
 import { url } from '../App'
-import { useUserContext } from '../Contexts/UserContext'
+import { UseUserContext } from '../Contexts/UserContext'
 
 const Cart = () => {
-    const { updateUser, user } = useUserContext()
+    const { updateUser, user } = UseUserContext()
     const [cartProds, setCartProds] = useState([])
     const [subtotal, setSubtotal] = useState(0)
     const [points, setPoints] = useState(null)
@@ -68,7 +68,6 @@ const Cart = () => {
 
     const usePoints = (e) => {
         e.preventDefault()
-        debugger
         if (user.loyaltyPoints >= points && points > 9) {
             setDiscount(subtotal - (subtotal - (points / 10)))
             e.target.children[2].value = ''
@@ -144,7 +143,7 @@ const Cart = () => {
                             <h5 className='text-xl font-semibold col-span-2'>Total Amount :</h5>
                             <span>Rs. {subtotal - discount}</span>
                         </div>
-                        <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white mt-8 text-center w-full' onClick={submit}>Proceed to Checkout</button>
+                        <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white mt-8 text-center w-full disabled:bg-gray-200 disabled:text-gray-400' disabled={cartProds.length === 0} onClick={submit}>Proceed to Checkout</button>
                     </div>
                 </div>
             </div>
