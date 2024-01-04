@@ -15,10 +15,10 @@ const Cart = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        getProducts()
+        getCartProducts()
     }, [])
 
-    const getProducts = () => {
+    const getCartProducts = () => {
         axios.get(`${url}/cart`)
             .then(res => {
                 setCartProds(res.data)
@@ -108,7 +108,7 @@ const Cart = () => {
                                 <td className='py-3 text-center border-x-2'>Rs. {prod.price}</td>
                                 <td className='py-3 text-center border-x-2'>Rs. {prod.price * prod.quantity}</td>
                                 <td className='py-3 px-2'>
-                                    <img src="\src\Assets\icons\cross.svg" alt="" className='mx-auto w-4 sm:w-auto cursor-pointer' onClick={() => deleteProduct(prod.id, () => getProducts())} />
+                                    <img src="\src\Assets\icons\cross.svg" alt="" className='mx-auto w-4 sm:w-auto cursor-pointer' onClick={() => deleteProduct(prod.id, () => getCartProducts())} />
                                 </td>
                             </tr>))}
                         </tbody>

@@ -5,7 +5,7 @@ import { UserContextProvider } from "./Contexts/UserContext";
 import { UseCartContext } from "./Contexts/CartContext";
 
 function App() {
-  const { cart, getCartProducts } = UseCartContext()
+  const { cart, getProducts } = UseCartContext()
   const location = useLocation();
   const isAllowedRoute = ['/signup', '/login'].includes(location.pathname);
 
@@ -17,8 +17,8 @@ function App() {
   }, [location.pathname]);
 
   useEffect(() => {
-    getCartProducts()
-    setInterval(() => getCartProducts(), 5000)
+    getProducts()
+    setInterval(() => getProducts(), 5000)
   }, [])
 
 

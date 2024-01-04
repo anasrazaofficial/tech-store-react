@@ -7,9 +7,9 @@ export const CartContext = createContext()
 export const CartContextProvider = ({ children }) => {
     const [cart, setCart] = useState([])
 
-    useEffect(() => getCartProducts(), [])
+    useEffect(() => getProducts(), [])
 
-    const getCartProducts = () => {
+    const getProducts = () => {
         axios.get(`${url}/cart`)
             .then(res => setCart(res.data))
             .catch(err => console.error(err))
@@ -34,7 +34,7 @@ export const CartContextProvider = ({ children }) => {
     }
 
     return (
-        <CartContext.Provider value={{ cart, getCartProducts, addProduct, deleteProduct, updateProduct }}>
+        <CartContext.Provider value={{ cart, getProducts, addProduct, deleteProduct, updateProduct }}>
             {children}
         </CartContext.Provider>
     )
