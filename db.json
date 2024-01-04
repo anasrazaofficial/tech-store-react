@@ -1,5 +1,49 @@
 {
-  "users": [],
+  "users": [
+    {
+      "name": "Anas Raza",
+      "email": "raza@gmail.com",
+      "phoneNumber": "+92 322 1233456",
+      "username": "raza123",
+      "dob": "2024-01-03",
+      "country": "Pakistan",
+      "city": "Karachi",
+      "address": "FB area",
+      "password": "12345678",
+      "confirmPassword": "12345678",
+      "id": 1,
+      "isLoggedin": true,
+      "loyaltyPoints": 54
+    },
+    {
+      "name": "Test",
+      "email": "test@gmail.com",
+      "phoneNumber": "+92 222 4252345",
+      "username": "test123",
+      "dob": "2024-01-03",
+      "country": "Pakistan",
+      "city": "Karachi",
+      "address": "FB area",
+      "password": "11223344",
+      "confirmPassword": "11223344",
+      "id": 2,
+      "isLoggedin": false
+    },
+    {
+      "name": "Anas",
+      "email": "anas@gmail.com",
+      "phoneNumber": "+92 322 0279939",
+      "username": "anas123",
+      "dob": "2024-01-03",
+      "country": "Pakistan",
+      "city": "Karachi",
+      "address": "FB area",
+      "password": "111111111",
+      "confirmPassword": "111111111",
+      "isLoggedin": false,
+      "id": 3
+    }
+  ],
   "products": [
     {
       "id": 1,

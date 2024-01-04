@@ -3,10 +3,11 @@ import { Navbar, Footer } from '../Components'
 import axios from 'axios'
 import { url } from '../App'
 import { useUserContext } from '../Contexts/UserContext'
+import { UseCartContext } from '../Contexts/CartContext'
 
 const Checkout = () => {
+    const { cart, deleteProduct } = UseCartContext()
     const { updateUser, user } = useUserContext()
-    const [cartData, setCartData] = useState({})
     const [subtotal, setSubtotal] = useState(0)
     const discount = window.localStorage.getItem('discount')
     const [payMeth, setPayMeth] = useState({
@@ -31,17 +32,12 @@ const Checkout = () => {
             isSelected: false
         }
     })
-
-    useEffect(() => {
-        window.scrollTo(0, 0)
-        axios.get(`${url}/cart`).then(res => {
-            setCartData(res.data)
-            setSubtotal(res.data.reduce((total, item) => total += (item.price * item.quantity), 0))
-        }).catch(err => console.error(err))
-    }, [])
+    window.addEventListener('load', () => setSubtotal(cart.reduce((total, item) => total += (item.price * item.quantity), 0)))
+    useEffect(() => window.scrollTo(0, 0), [])
 
     const submit = (e) => {
         e.preventDefault()
+        debugger
         let paymentSelected = true
         for (let i = 0; i < Object.keys(payMeth).length; i++) {
             const element = Object.keys(payMeth)[i];
@@ -51,7 +47,7 @@ const Checkout = () => {
                 let obj = {
                     ...newUser,
                     userId: user.id,
-                    cart: cartData,
+                    cart,
                     paymentMethod: { [element]: method },
                     subtotal,
                     discount,
@@ -59,7 +55,7 @@ const Checkout = () => {
                 }
                 axios.post(`${url}/orders`, obj)
                     .then(() => {
-                        cartData.forEach(data => axios.delete(`${url}/cart/${data.id}`).catch(err => console.error(err)))
+                        cart.forEach(data => deleteProduct(data.id))
                         window.localStorage.removeItem('discount')
                         window.location.href = '/'
                     }).catch(err => console.error(err))
@@ -68,7 +64,7 @@ const Checkout = () => {
                 // Adding Loyalty points to users
                 let points;
                 if (subtotal > 999) {
-                    points = Number(subtotal.toString().slice(0, subtotal.toString().length - 3))
+                    points = Number(subtotal.toString().slice(0, subtotal.toString().length - 2))
                     if (user.hasOwnProperty('loyaltyPoints')) points += user.loyaltyPoints
                     updateUser(user.id, { ...user, loyaltyPoints: points })
                 }

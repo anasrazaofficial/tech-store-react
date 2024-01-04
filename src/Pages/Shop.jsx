@@ -3,9 +3,10 @@ import { Footer, Navbar } from '../Components'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { url } from '../App'
+import { UseCartContext } from '../Contexts/CartContext';
 
 const Shop = () => {
-
+    const { cart, addProduct, updateProduct } = UseCartContext()
     const [added, setAdded] = useState([])
     const [products, setProducts] = useState([])
 
@@ -24,21 +25,18 @@ const Shop = () => {
             newAdded[i] = true;
             return newAdded;
         });
-        axios.get(`${url}/cart`)
-            .then(response => {
-                let itemFound = false
-                response.data.length === 0 ? axios.post(`${url}/cart`, product) : null
-                for (let i = 0; i < response.data.length; i++) {
-                    const element = response.data[i];
-                    if (element.id === product.id) {
-                        const quan = element.quantity
-                        axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
-                        itemFound = true
-                        break
-                    } else itemFound = false
-                }
-                if (!itemFound) axios.post(`${url}/cart`, product)
-            }).catch(err => console.error(err))
+        let itemFound = false
+        cart.length === 0 ? addProduct(product) : null
+        for (let i = 0; i < cart.length; i++) {
+            const element = cart[i];
+            if (element.id === product.id) {
+                const quan = element.quantity
+                updateProduct(product.id, { ...product, quantity: quan + 1 })
+                itemFound = true
+                break
+            } else itemFound = false
+        }
+        if (!itemFound) addProduct(product)
     }
 
     return (

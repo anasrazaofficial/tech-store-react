@@ -3,10 +3,8 @@ import { Footer, Navbar } from '../Components'
 import axios from 'axios'
 import { url } from '../App'
 import { useUserContext } from '../Contexts/UserContext'
-import { UseCartContext } from '../Contexts/CartContext'
 
 const Cart = () => {
-    const { cart, deleteProduct, updateProduct } = UseCartContext()
     const { updateUser, user } = useUserContext()
     const [cartProds, setCartProds] = useState([])
     const [subtotal, setSubtotal] = useState(0)
@@ -15,10 +13,10 @@ const Cart = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        getCartProducts()
+        getProducts()
     }, [])
 
-    const getCartProducts = () => {
+    const getProducts = () => {
         axios.get(`${url}/cart`)
             .then(res => {
                 setCartProds(res.data)
@@ -37,9 +35,19 @@ const Cart = () => {
 
     }
 
+    const deleteProduct = (id) => {
+        axios.delete(`${url}/cart/${id}`)
+            .then(() => getProducts())
+            .catch(err => console.error(err))
+    }
+
     const submit = () => {
         window.localStorage.setItem('discount', discount.toFixed(2))
-        cart.forEach(product => updateProduct(product.id, { ...product, quantity: product.quantity }))
+        cartProds.forEach(product => {
+            axios.put(`${url}/cart/${product.id}`, { ...product, quantity: product.quantity })
+                .then(res => console.info(res))
+                .catch(err => console.error(err))
+        })
         updateUser(user.id, { ...user, loyaltyPoints: user.loyaltyPoints - points })
         window.location.href = '/checkout'
     }
@@ -94,7 +102,7 @@ const Cart = () => {
                         </thead>
 
                         <tbody>
-                            {cart.map((prod, i) => (<tr key={prod.id}>
+                            {cartProds.map((prod, i) => (<tr key={prod.id}>
                                 <td className='py-3 text-center border-x-2'>{i + 1}</td>
                                 <td className='py-3 text-center border-x-2'>{prod.id}</td>
                                 <td className='py-3 text-center border-x-2'>{prod.productName}</td>
@@ -108,7 +116,7 @@ const Cart = () => {
                                 <td className='py-3 text-center border-x-2'>Rs. {prod.price}</td>
                                 <td className='py-3 text-center border-x-2'>Rs. {prod.price * prod.quantity}</td>
                                 <td className='py-3 px-2'>
-                                    <img src="\src\Assets\icons\cross.svg" alt="" className='mx-auto w-4 sm:w-auto cursor-pointer' onClick={() => deleteProduct(prod.id, () => getCartProducts())} />
+                                    <img src="\src\Assets\icons\cross.svg" alt="" className='mx-auto w-4 sm:w-auto cursor-pointer' onClick={() => deleteProduct(prod.id)} />
                                 </td>
                             </tr>))}
                         </tbody>
