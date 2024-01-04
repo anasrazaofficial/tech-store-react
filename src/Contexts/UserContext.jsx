@@ -5,7 +5,7 @@ import { url } from '../App'
 
 const UserContext = createContext()
 
-export const UserContextProvider = ({ children }) => {
+export const ContextProvider = ({ children }) => {
     const [users, setUsers] = useState([])
     const [user, setUser] = useState({})
     useEffect(() => {

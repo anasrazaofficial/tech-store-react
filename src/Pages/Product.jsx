@@ -3,10 +3,8 @@ import { useLocation } from 'react-router-dom'
 import { Navbar, Footer } from '../Components'
 import axios from 'axios';
 import { url } from '../App';
-import { UseCartContext } from '../Contexts/CartContext';
 
 const Product = () => {
-    const { cart, addProduct, updateProduct } = UseCartContext()
     const myParam = new URLSearchParams(useLocation().search).get('id');
     const [product, setProduct] = useState({})
 
@@ -18,27 +16,30 @@ const Product = () => {
     }, [])
 
     const addToCart = () => {
-        debugger
-        let itemFound = false
-        if (cart.length === 0) {
-            addProduct(product)
-            window.location.href = '/cart'
-        } else {
-            for (let i = 0; i < cart.length; i++) {
-                const element = cart[i];
-                if (element.id === product.id) {
-                    const quan = element.quantity
-                    updateProduct(product.id, { ...product, quantity: quan + 1 })
-                    window.location.href = '/cart'
-                    itemFound = true
-                    break
-                } else itemFound = false
-            }
-        }
-        if (!itemFound) {
-            addProduct(product)
-            window.location.href = '/cart'
-        }
+        axios.get(`${url}/cart`)
+            .then(response => {
+                debugger
+                let itemFound = false
+                if (response.data.length === 0) {
+                    axios.post(`${url}/cart`, product)
+                        .then(() => window.location.href = '/cart')
+                        .catch(err => console.error(err))
+                } else {
+                    for (let i = 0; i < response.data.length; i++) {
+                        const element = response.data[i];
+                        if (element.id === product.id) {
+                            const quan = element.quantity
+                            axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
+                                .then(() => {
+                                    window.location.href = '/cart'
+                                })
+                                .catch(err => console.error(err))
+                            itemFound = true
+                            break
+                        } else itemFound = false
+                    }
+                }
+            }).catch(err => console.error(err))
     }
 
     return (
