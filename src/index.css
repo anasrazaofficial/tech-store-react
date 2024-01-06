@@ -3,7 +3,7 @@
 
 :root {
   --theme-primary: #4842a2;
-  --bg-primary-hover:#302c6d;
+  --bg-primary-hover: #302c6d;
   --theme-secondary: #48ca95;
   --theme-secondary-hover: #08ae6a;
 }
@@ -14,6 +14,22 @@
 
 .bg-footer {
   background-image: url('./Assets/footer.jpg')
+}
+
+.popup {
+  animation: popupFromTop .5s;
+}
+
+@keyframes popupFromTop {
+  0% {
+    margin-bottom: 100px;
+    opacity: 0;
+  }
+
+  100% {
+    margin-bottom: 0;
+    opacity: 1;
+  }
 }
 
 

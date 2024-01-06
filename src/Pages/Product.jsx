@@ -20,30 +20,25 @@ const Product = () => {
     }, [])
 
     const addToCart = () => {
-        if (Object.keys(user).length !== 0) {
-            let itemFound = false
-            if (cart.length === 0) {
-                addProduct(product)
-                window.location.href = '/cart'
-            } else {
-                for (let i = 0; i < cart.length; i++) {
-                    const element = cart[i];
-                    if (element.id === product.id) {
-                        const quan = element.quantity
-                        updateProduct(product.id, { ...product, quantity: quan + 1 })
-                        window.location.href = '/cart'
-                        itemFound = true
-                        break
-                    } else itemFound = false
-                }
-            }
-            if (!itemFound) {
-                addProduct(product)
-                window.location.href = '/cart'
-            }
+        let itemFound = false
+        if (cart.length === 0) {
+            addProduct(product)
+            window.location.href = '/cart'
         } else {
-            let confirmation = confirm("You cannot proceed with the purchase until you are logged in. Would you like to log in now?")
-            if (confirmation) window.location.href = '/login'
+            for (let i = 0; i < cart.length; i++) {
+                const element = cart[i];
+                if (element.id === product.id) {
+                    const quan = element.quantity
+                    updateProduct(product.id, { ...product, quantity: quan + 1 })
+                    window.location.href = '/cart'
+                    itemFound = true
+                    break
+                } else itemFound = false
+            }
+        }
+        if (!itemFound) {
+            addProduct(product)
+            window.location.href = '/cart'
         }
     }
 

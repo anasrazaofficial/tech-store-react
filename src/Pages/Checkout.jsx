@@ -8,6 +8,7 @@ import { UseCartContext } from '../Contexts/CartContext'
 const Checkout = () => {
     const { cart, deleteProduct } = UseCartContext()
     const { updateUser, user } = UseUserContext()
+    const [popup, setPopup] = useState(false)
     const [subtotal, setSubtotal] = useState(0)
     const discount = window.localStorage.getItem('discount')
     const [payMeth, setPayMeth] = useState({
@@ -38,42 +39,47 @@ const Checkout = () => {
 
     const submit = (e) => {
         e.preventDefault()
-        let paymentSelected = true
-        for (let i = 0; i < Object.keys(payMeth).length; i++) {
-            const element = Object.keys(payMeth)[i];
-            if (payMeth[element].isSelected) {
-                let { username, password, confirmPassword, isLoggedin, id, ...newUser } = user
-                let { isSelected, ...method } = payMeth[element]
-                let obj = {
-                    ...newUser,
-                    userId: user.id,
-                    cart,
-                    paymentMethod: { [element]: method },
-                    subtotal,
-                    discount,
-                    total: Math.round(subtotal - discount)
+        if (Object.keys(user).length !== 0) {
+            let paymentSelected = true
+            for (let i = 0; i < Object.keys(payMeth).length; i++) {
+                const element = Object.keys(payMeth)[i];
+                if (payMeth[element].isSelected) {
+                    let { username, password, confirmPassword, isLoggedin, id, ...newUser } = user
+                    let { isSelected, ...method } = payMeth[element]
+                    let obj = {
+                        ...newUser,
+                        userId: user.id,
+                        cart,
+                        paymentMethod: { [element]: method },
+                        subtotal,
+                        discount,
+                        total: Math.round(subtotal - discount)
+                    }
+                    axios.post(`${url}/orders`, obj)
+                        .then(() => {
+                            cart.forEach(data => deleteProduct(data.id))
+                            window.localStorage.removeItem('discount')
+                            setPopup(true)
+                        }).catch(err => console.error(err))
+
+
+                    // Adding Loyalty points to users
+                    let points;
+                    if (subtotal > 999) {
+                        points = Number(subtotal.toString().slice(0, subtotal.toString().length - 2))
+                        if (user.hasOwnProperty('loyaltyPoints')) points += user.loyaltyPoints
+                        updateUser(user.id, { ...user, loyaltyPoints: points })
+                    }
+
+                    paymentSelected = false
+                    break
                 }
-                axios.post(`${url}/orders`, obj)
-                    .then(() => {
-                        cart.forEach(data => deleteProduct(data.id))
-                        window.localStorage.removeItem('discount')
-                        window.location.href = '/'
-                    }).catch(err => console.error(err))
-
-
-                // Adding Loyalty points to users
-                let points;
-                if (subtotal > 999) {
-                    points = Number(subtotal.toString().slice(0, subtotal.toString().length - 2))
-                    if (user.hasOwnProperty('loyaltyPoints')) points += user.loyaltyPoints
-                    updateUser(user.id, { ...user, loyaltyPoints: points })
-                }
-
-                paymentSelected = false
-                break
             }
+            if (paymentSelected) alert('Select payment method')
+        } else {
+            let confirmation = confirm("You cannot proceed with the purchase until you are logged in. Would you like to log in now?")
+            if (confirmation) window.location.href = '/login'
         }
-        if (paymentSelected) alert('Select payment method')
     }
 
     const selectMethod = (method) => {
@@ -218,8 +224,18 @@ const Checkout = () => {
                     </div>
                 </div>
             </div>
-
-
+            {popup && <div className='fixed z-10 h-screen top-0 w-full backdrop-blur-sm grid place-items-center'>
+                <div className='bg-white shadow-lg rounded-lg w-[90%] sm:w-96 space-y-5 pb-5 popup'>
+                    <header className='bg-[--theme-primary] px-5 text-white rounded-t-lg font-semibold flex justify-between items-center text-lg'>
+                        <h4>Order Confirmed!</h4>
+                        <span className='cursor-pointer' onClick={() => {
+                            setPopup(false)
+                            window.location.href = '/'
+                        }}>X</span>
+                    </header>
+                    <p className='px-5'>Thank you for shopping with us! We appreciate your business and look forward to welcoming you back soon.</p>
+                </div>
+            </div>}
             <Footer />
         </div>
     )

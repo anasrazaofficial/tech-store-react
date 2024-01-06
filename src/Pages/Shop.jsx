@@ -22,28 +22,23 @@ const Shop = () => {
     }, [])
 
     const addToCart = (i, product) => {
-        if (Object.keys(user).length !== 0) {
-            setAdded((prevAdded) => {
-                const newAdded = [...prevAdded];
-                newAdded[i] = true;
-                return newAdded;
-            });
-            let itemFound = false
-            cart.length === 0 ? addProduct(product) : null
-            for (let i = 0; i < cart.length; i++) {
-                const element = cart[i];
-                if (element.id === product.id) {
-                    const quan = element.quantity
-                    updateProduct(product.id, { ...product, quantity: quan + 1 })
-                    itemFound = true
-                    break
-                } else itemFound = false
-            }
-            if (!itemFound) addProduct(product)
-        } else {
-            let confirmation = confirm("You cannot proceed with the purchase until you are logged in. Would you like to log in now?")
-            if (confirmation) window.location.href = '/login'
+        setAdded((prevAdded) => {
+            const newAdded = [...prevAdded];
+            newAdded[i] = true;
+            return newAdded;
+        });
+        let itemFound = false
+        cart.length === 0 ? addProduct(product) : null
+        for (let i = 0; i < cart.length; i++) {
+            const element = cart[i];
+            if (element.id === product.id) {
+                const quan = element.quantity
+                updateProduct(product.id, { ...product, quantity: quan + 1 })
+                itemFound = true
+                break
+            } else itemFound = false
         }
+        if (!itemFound) addProduct(product)
     }
 
     return (
