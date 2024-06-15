@@ -21,13 +21,11 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
-    dob: {
-        type: Date
-    },
+    dob: Date,
     address: {
-        street: { type: String },
-        city: { type: String },
-        country: { type: String }
+        street: String,
+        city: String,
+        country: String,
     },
     password: {
         type: String,
@@ -37,9 +35,8 @@ const userSchema = new Schema({
         type: Number,
         default: 0
     },
-    token: {
-        type: String
-    }
+    token: String
+
 })
 
 module.exports = model('user', userSchema)

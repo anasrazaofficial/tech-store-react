@@ -3,22 +3,22 @@ const orderSchema = new Schema({
     userId: { type: Types.ObjectId, ref: 'user' },
     products: [{
         productId: { type: Types.ObjectId, ref: 'product' },
-        quantity: { type: Number },
-        price: { type: Number }
+        quantity: Number,
+        price: Number
     }],
     amount: {
-        subtotal: { type: Number },
+        subtotal: Number,
         discount: { type: Number, default: 0 },
-        total: { type: Number }
+        total: Number
     },
     paymentMethod: {
         method: { type: String, enum: ['Jazz Cash', 'Easypaisa', 'Bank Transfer', 'Cash on delivery'] },
         details: {
-            phoneNumber: { type: String },
-            cardNumber: { type: String },
-            cvv: { type: String },
-            expiryDate: { type: String },
-            otp: { type: String }
+            phoneNumber: String,
+            cardNumber: String,
+            cvv: String,
+            expiryDate: String,
+            otp: String
         }
     }
 })
