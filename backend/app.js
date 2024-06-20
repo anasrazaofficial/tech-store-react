@@ -10,6 +10,7 @@ const Cart = require('./model/cart')
 const Order = require('./model/order')
 const Product = require('./model/product')
 const User = require('./model/user')
+const auth = require('./middleware/auth')
 
 const { PORT, SECRET_KEY } = process.env
 
@@ -92,44 +93,78 @@ app.post('/login', async (req, res) => {
     }
 })
 
-app.get('/token', (req, res) => {
-    return res.status(200).json(req.cookies.token)
-})
-
 
 
 // Product routes
 app.get('/products', async (req, res) => {
-    const product = await Product.find({})
-    res.status(200).send(product)
+    try {
+        const product = await Product.find({})
+        res.status(200).send(product)
+    } catch (error) {
+        console.log(error);
+    }
 })
 
 app.get('/product', async (req, res) => {
-    const id = req.query.id
-    const product = await Product.findById(id)
+    try {
+        const id = req.query.id
+        const product = await Product.findById(id)
 
-    if (!product) {
-        return res.status(404).send("Product not found")
+        if (!product) {
+            return res.status(404).send("Product not found")
+        }
+
+        return res.status(200).send(product)
+    } catch (error) {
+        console.log(error);
     }
-
-    return res.status(200).send(product)
-
 })
 
 
 
 // Cart Routes
-app.get('/addToCart', async (req, res) => {
-    const { products } = req.body
-    if (!products) {
-        return res.status(404).send("Product not found")
-    }
+app.post('/addToCart', async (req, res) => {
+    try {
+        const { products } = req.body
+        if (!products) {
+            return res.status(404).send("Product not found")
+        }
 
-    const cart = await Cart.create({ products })
-    return res.status(200).send("Product added to cart successfully\n" + cart)
+        let existingProduct = await Cart.find({})
+        console.log(existingProduct);
+        if (existingProduct.length == 1) {
+            await Cart.deleteMany({})
+        }
+
+        const cart = await Cart.create({ products })
+        return res.status(200).send("Product added to cart successfully\n" + cart)
+    } catch (error) {
+        console.log(error);
+    }
 })
 
-// app.delete()
+
+
+// Orders
+app.post('/placeOrder', auth, async (req, res) => {
+    try {
+        const { userId, products, amount, paymentMethod } = req.body
+        if (!(userId, products, amount, paymentMethod)) {
+            return res.status(401).send("All fields are required")
+        }
+
+        const order = await Order.create({
+            userId: req.user.user_id,
+            products, amount, paymentMethod
+        })
+
+        await Cart.deleteMany({})
+        res.status(200).send("Order has been placed successfully\n" + order)
+    } catch (error) {
+        console.log(error);
+    }
+
+})
 
 
 app.listen(PORT, () => console.log(`Server is Listening on ${PORT}`))
