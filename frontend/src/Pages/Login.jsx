@@ -3,7 +3,7 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const Login = () => {
+export const Login = () => {
     const [pass, setPass] = useState(false)
     const [user, setUser] = useState({
         username: '',
@@ -67,5 +67,3 @@ const Login = () => {
         </div>
     )
 }
-
-export default Login

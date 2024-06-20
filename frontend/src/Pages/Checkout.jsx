@@ -3,7 +3,7 @@ import { Navbar, Footer } from '../Components'
 import axios from 'axios'
 import { url } from '../App'
 
-const Checkout = () => {
+export const Checkout = () => {
     const [cartData, setCartData] = useState({})
     const [user, setUser] = useState([])
     const [subtotal, setSubtotal] = useState(0)
@@ -230,5 +230,3 @@ const Checkout = () => {
         </div>
     )
 }
-
-export default Checkout

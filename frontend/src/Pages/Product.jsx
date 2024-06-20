@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
 import { Navbar, Footer } from '../Components'
 import axios from 'axios';
 import { url } from '../App';
 
-const Product = () => {
-    const myParam = new URLSearchParams(useLocation().search).get('id');
+export const Product = () => {
     const [product, setProduct] = useState({})
 
     useEffect(() => {
         window.scrollTo(0, 0)
-        axios.get(`${url}/products/${myParam}`)
-            .then(res => setProduct(res.data))
+
+        let id = new URLSearchParams(window.location.search).get('id')
+        axios.get(`${url}/product?id=${id}`)
+            .then(res => {
+                setProduct(res.data)
+                console.log(res.data);
+            })
             .catch(err => console.error(err))
     }, [])
 
@@ -55,13 +58,20 @@ const Product = () => {
 
             <div className='px-5 sm:px-20 py-8 sm:py-14 my-8 sm:my-14 grid sm:grid-cols-2 gap-12'>
                 <div>
-                    <img src={product.url} alt="" className='w-full h-auto' />
+                    <img src={product.img} alt={product.productName} title={product.productName} className='w-full h-auto' />
                 </div>
                 <div className='space-y-5 sm:space-y-8'>
-                    <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5'>{product.productName}</h2>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil totam vel voluptates similique quam dolore commodi doloremque facilis saepe esse voluptatem non dolorum ut aperiam, rem veniam. Iste, sit repellat. <br />
-                        <span className='text-lg text-gray-700 font-bold mt-2'>Rs. {product.price}</span>
-                    </p>
+                    <div className='space-y-2'>
+                        <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] pb-4 sm:pb-6 uppercase sm:w-fit'>{product.productName}</h2>
+                        <p className='text-gray-600'>{product.description}</p>
+                    </div>
+                    <ul>
+                        {product?.features?.map((feature, i) => (
+                            <li key={feature._id ? feature._id.$oid : feature.feature}>{typeof feature === 'string' ? feature : feature.feature}</li>
+                        ))}
+                    </ul>
+                    <p className='text-lg text-gray-700 font-bold mt-2'>Rs. {product.price}</p>
+
 
                     <button className='bg-[--theme-secondary] font-semibold sm:font-bold py-2 sm:py-3 px-8 sm:px-10 hover:bg-[--theme-secondary-hover] transition-colors text-white' onClick={addToCart}>Add to cart</button>
                 </div>
@@ -73,5 +83,3 @@ const Product = () => {
         </div>
     )
 }
-
-export default Product

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { url } from '../App'
 
-const Shop = () => {
+export const Shop = () => {
 
     const [added, setAdded] = useState([])
     const [products, setProducts] = useState([])
@@ -86,5 +86,3 @@ const Shop = () => {
         </div >
     )
 }
-
-export default Shop

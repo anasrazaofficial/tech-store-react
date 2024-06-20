@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { url } from '../App'
 
-const Signup = () => {
+export const Signup = () => {
     const [user, setUser] = useState({
         name: '',
         email: '',
@@ -137,5 +137,3 @@ const Signup = () => {
         </div>
     )
 }
-
-export default Signup

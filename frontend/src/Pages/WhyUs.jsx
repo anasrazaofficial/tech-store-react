@@ -1,7 +1,7 @@
 import React from 'react'
 import { Footer, Navbar } from '../Components'
 
-const WhyUs = () => {
+export const WhyUs = () => {
     return (
         <div>
             
@@ -42,5 +42,3 @@ const WhyUs = () => {
         </div>
     )
 }
-
-export default WhyUs

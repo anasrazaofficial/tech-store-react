@@ -2,7 +2,7 @@ import React from 'react'
 import { Footer, Navbar } from '../Components'
 import { Link } from 'react-router-dom'
 
-const About = () => {
+export const About = () => {
     return (
         <div>
 
@@ -28,5 +28,3 @@ const About = () => {
         </div>
     )
 }
-
-export default About

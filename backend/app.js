@@ -5,6 +5,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
 
 const Cart = require('./model/cart')
 const Order = require('./model/order')
@@ -18,6 +19,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors())
 
 // User routes
 app.post('/signup', async (req, res) => {
@@ -98,8 +100,8 @@ app.post('/login', async (req, res) => {
 // Product routes
 app.get('/products', async (req, res) => {
     try {
-        const product = await Product.find({})
-        res.status(200).send(product)
+        const products = await Product.find({})
+        res.status(200).send(products)
     } catch (error) {
         console.log(error);
     }
@@ -138,6 +140,18 @@ app.post('/addToCart', async (req, res) => {
 
         const cart = await Cart.create({ products })
         return res.status(200).send("Product added to cart successfully\n" + cart)
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+app.get('/cart', async (req, res) => {
+    try {
+        const cart = await Cart.find({})
+        if (cart.length == 0) {
+            return res.status(200).send("Cart is empty")
+        }
+        return res.status(200).send(cart)
     } catch (error) {
         console.log(error);
     }
