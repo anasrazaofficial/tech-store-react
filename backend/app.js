@@ -42,15 +42,15 @@ app.post('/signup', async (req, res) => {
         });
 
         const token = jwt.sign(
-            { user_id: user._id, userName, email },
+            { user_id: user._id, userName, email, loyaltyPoints: user.loyaltyPoints },
             SECRET_KEY,
-            { expiresIn: "24h" }
+            { expiresIn: "30d" }
         );
         user.token = token;
         user.password = undefined;
 
         res.cookie('token', token, {
-            expires: new Date(Date.now() + (5 * 24 * 60 * 60)),
+            expires: new Date(Date.now() + (30 * 24 * 60 * 60)),
             httpOnly: true
         });
 
@@ -77,23 +77,34 @@ app.post('/login', async (req, res) => {
             return res.status(401).send("Invalid password")
         }
 
-        let token = jwt.sign({ user_id: user._id, userName, email: user.email },
+        let token = jwt.sign(
+            { user_id: user._id, userName, email: user.email, loyaltyPoints: user.loyaltyPoints },
             SECRET_KEY,
-            { expiresIn: "24h" }
+            { expiresIn: "30d" }
         )
         user.token = token
         user.password = undefined
 
         res.cookie('token', token, {
-            expires: new Date(Date.now() + (5 * 24 * 60 * 60)),
+            expires: new Date(Date.now() + (30 * 24 * 60 * 60)),
             httpOnly: true
         })
+
 
         return res.status(200).json(user)
     } catch (error) {
         console.error(error);
     }
 })
+
+app.get('/user', auth, (req, res) => {
+    if (req.user) {
+        return res.status(200).send(req.user)
+    }
+    return res.status(401).send("Sign in required")
+})
+
+app.get('/token', async (req, res) => res.status(200).send(req.cookies.token))
 
 
 

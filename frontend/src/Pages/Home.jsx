@@ -5,19 +5,29 @@ import axios from 'axios'
 import { url } from '../App'
 
 
-export const Home = () => {
+export const Home = ({ cartChange }) => {
     const [added, setAdded] = useState([])
     const [products, setProducts] = useState([])
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
         axios.get(`${url}/products`)
             .then(res => {
                 setProducts(res.data);
-                console.log(res.data);
-                res.data.forEach(() => added.push(false));
+
+                const initialAdded = new Array(res.data.length).fill(false);
+
+                const localProducts = JSON.parse(localStorage.getItem('cart'));
+                if (localProducts) {
+                    res.data.forEach((product, i) => {
+                        initialAdded[i] = localProducts.some(localProduct => localProduct.product._id === product._id)
+                    })
+                }
+                setAdded(initialAdded);
             })
     }, [])
+
 
     const addToCart = (i, product) => {
         setAdded((prevAdded) => {
@@ -25,21 +35,13 @@ export const Home = () => {
             newAdded[i] = true;
             return newAdded;
         });
-        axios.get(`${url}/cart`)
-            .then(response => {
-                let itemFound = false
-                response.data.length === 0 ? axios.post(`${url}/cart`, product) : null
-                for (let i = 0; i < response.data.length; i++) {
-                    const element = response.data[i];
-                    if (element.id === product.id) {
-                        const quan = element.quantity
-                        axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
-                        itemFound = true
-                        break
-                    } else itemFound = false
-                }
-                if (!itemFound) axios.post(`${url}/cart`, product)
-            }).catch(err => console.error(err))
+
+        let cart;
+        let cartLocal = JSON.parse(localStorage.getItem('cart'))
+        cart = cartLocal ? cartLocal : []
+        cart.push({ quantity: 1, product })
+        localStorage.setItem('cart', JSON.stringify(cart))
+        cartChange(cart.length)
     }
 
 
@@ -92,7 +94,7 @@ export const Home = () => {
                 <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5'>Our Products</h2>
                 <div className='bg-white grid sm:grid-cols-3 gap-5 p-5'>
                     {products.slice(0, 6).map((el, i) => (
-                        <div className='flex flex-col items-center border-2 border-gray-100 rounded-lg py-3' key={el.id}>
+                        <div key={el.id} className='flex flex-col items-center border-2 border-gray-100 rounded-lg py-3'>
                             <img src={el.img} alt={el.productName} title={el.productName} />
                             <h3 className='sm:text-2xl font-semibold'>{el.productName}</h3>
                             <small className='text-gray-600 text-lg mb-1 sm:mb-3'>Rs. {el.price}</small>
@@ -101,6 +103,7 @@ export const Home = () => {
                                     pathname: '/product',
                                     search: `?id=${el._id}`,
                                 }} className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>More Info</Link>
+
                                 {!added[i] && <button className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors' onClick={() => addToCart(i, el)}>Add to cart</button>}
                                 {added[i] && <Link to='/cart' className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>Go to cart</Link>}
                             </div>

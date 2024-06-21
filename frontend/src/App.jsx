@@ -8,22 +8,16 @@ import { ErrorBoundary } from "./Components/ErrorBoundary";
 
 
 function App() {
-  const [cartProducts, setCartProducts] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [cartLength, setCartLength] = useState(0)
 
   useEffect(() => {
-    getCartItems();
-  }, []);
+    let cart = localStorage.getItem('cart')
+    if (cart) {
+      setCart(JSON.parse(cart))
+    }
+  }, [cartLength]);
 
-  const getCartItems = () => {
-    axios.get(`${url}/cart`)
-      .then(res => {
-        if (!Array.isArray(res.data)) {
-          console.log(res.data);
-        } else {
-          setCartProducts(res.data);
-        }
-      }).catch(err => console.error(err));
-  };
 
   return (
     <>
@@ -36,7 +30,7 @@ function App() {
                 path="/"
                 element={
                   <ErrorBoundary>
-                    <Home />
+                    <Home cartChange={setCartLength} />
                   </ErrorBoundary>
                 }
               />
@@ -99,7 +93,7 @@ function App() {
                 path="/cart"
                 element={
                   <ErrorBoundary>
-                    <Cart />
+                    <Cart cartChange={setCartLength} />
                   </ErrorBoundary>
                 }
               />
@@ -108,7 +102,7 @@ function App() {
                 path="/product"
                 element={
                   <ErrorBoundary>
-                    <Product />
+                    <Product cartChange={setCartLength} />
                   </ErrorBoundary>
                 }
               />
@@ -123,11 +117,11 @@ function App() {
               />
 
             </Routes>
-            
+
           </main>
-          {cartProducts.length !== 0 && (
+          {cart.length !== 0 && (
             <div className="fixed bottom-3 sm:bottom-5 right-3 sm:right-5">
-              <span className="absolute top-0 -right-2 bg-[--theme-secondary] rounded-full px-1.5 text-sm">{cartProducts.length}</span>
+              <span className="absolute top-0 -right-2 bg-[--theme-secondary] rounded-full px-1.5 text-sm">{cart.length}</span>
               <Link to='/cart' className="w-12 h-12 bg-[--theme-primary] rounded-full flex justify-center items-center hover:bg-[--bg-primary-hover]">
                 <img src="src\Assets\icons\cart.svg" className="w-3/5" alt="" />
               </Link>

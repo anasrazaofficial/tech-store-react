@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Navbar, Footer } from '../Components'
 import axios from 'axios';
 import { url } from '../App';
+import { useNavigate } from 'react-router-dom';
 
-export const Product = () => {
+export const Product = ({ cartChange }) => {
     const [product, setProduct] = useState({})
+    const [isAdded, setisAdded] = useState(false)
+    const navigate = useNavigate()
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -13,40 +17,24 @@ export const Product = () => {
         axios.get(`${url}/product?id=${id}`)
             .then(res => {
                 setProduct(res.data)
-                console.log(res.data);
+                let cart = JSON.parse(localStorage.getItem('cart'))
+                setisAdded(cart?.some(element => element.product._id == res.data._id))
             })
             .catch(err => console.error(err))
     }, [])
 
     const addToCart = () => {
-        axios.get(`${url}/cart`)
-            .then(response => {
-                if (response.data.length === 0) {
-                    axios.post(`${url}/cart`, product)
-                        .then(() => window.location.href = '/cart')
-                        .catch(err => console.error(err))
-                } else {
-                    let isFound = true
-                    for (let i = 0; i < response.data.length; i++) {
-                        const element = response.data[i];
-                        if (element.id === product.id) {
-                            const quan = element.quantity
-                            axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
-                                .then(() => {
-                                    window.location.href = '/cart'
-                                })
-                                .catch(err => console.error(err))
-                            isFound = false
-                            break
-                        } else isFound = true
-                    }
-                    if (isFound) {
-                        axios.post(`${url}/cart`, product)
-                            .then(() => window.location.href = '/cart')
-                            .catch(err => console.error(err))
-                    }
-                }
-            }).catch(err => console.error(err))
+        if (!isAdded) {
+            let cart;
+            let cartLocal = JSON.parse(localStorage.getItem('cart'))
+            cart = cartLocal ? cartLocal : []
+            cart.push({ quantity: 1, product })
+            localStorage.setItem('cart', JSON.stringify(cart))
+            setisAdded(true)
+            cartChange(cart.length)
+        } else {
+            navigate('/cart')
+        }
     }
 
     return (
@@ -73,7 +61,13 @@ export const Product = () => {
                     <p className='text-lg text-gray-700 font-bold mt-2'>Rs. {product.price}</p>
 
 
-                    <button className='bg-[--theme-secondary] font-semibold sm:font-bold py-2 sm:py-3 px-8 sm:px-10 hover:bg-[--theme-secondary-hover] transition-colors text-white' onClick={addToCart}>Add to cart</button>
+                    <button className='bg-[--theme-secondary] font-semibold sm:font-bold py-2 sm:py-3 px-8 sm:px-10 hover:bg-[--theme-secondary-hover] transition-colors text-white cursor-pointer'
+                        onClick={addToCart}>
+                        {isAdded ?
+                            'Go to Cart' :
+                            'Add to cart'
+                        }
+                    </button>
                 </div>
             </div>
 
