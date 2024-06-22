@@ -21,7 +21,9 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors())
 
-// User routes
+/// User routes
+
+//Sign up
 app.post('/signup', async (req, res) => {
     try {
         const { name, email, phoneNumber, userName, dob, address, password } = req.body;
@@ -60,6 +62,7 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+// Login
 app.post('/login', async (req, res) => {
     try {
         const { userName, password } = req.body
@@ -97,6 +100,7 @@ app.post('/login', async (req, res) => {
     }
 })
 
+// Get a specific user by passing token in the headers
 app.get('/user', auth, (req, res) => {
     if (req.user) {
         return res.status(200).send(req.user)
@@ -104,11 +108,29 @@ app.get('/user', auth, (req, res) => {
     return res.status(401).send("Sign in required")
 })
 
+app.put('/user/:id', auth, async (req, res) => {
+    let { loyaltyPoints } = req.body
+    const id = req.params.id
+    if (!id) {
+        return res.status(404).send("User id not found")
+    } else if (!loyaltyPoints) {
+        return res.status(404).send("Loyalty Points not found")
+    }
+
+    await User.findByIdAndUpdate(id, { loyaltyPoints }, { new: true });
+    return res.status(200).send("User has been updated")
+
+})
+
+// Get token
 app.get('/token', async (req, res) => res.status(200).send(req.cookies.token))
 
 
 
-// Product routes
+
+/// Product routes
+
+// Get all products
 app.get('/products', async (req, res) => {
     try {
         const products = await Product.find({})
@@ -118,6 +140,7 @@ app.get('/products', async (req, res) => {
     }
 })
 
+// Get product by id in query params (htt.../product?id=1251asf114v140)
 app.get('/product', async (req, res) => {
     try {
         const id = req.query.id
@@ -135,16 +158,18 @@ app.get('/product', async (req, res) => {
 
 
 
-// Cart Routes
+
+/// Cart Routes
+
+// Add to cart
 app.post('/addToCart', async (req, res) => {
     try {
         const { products } = req.body
         if (!products) {
-            return res.status(404).send("Product not found")
+            return res.status(404).send("Products not found")
         }
 
         let existingProduct = await Cart.find({})
-        console.log(existingProduct);
         if (existingProduct.length == 1) {
             await Cart.deleteMany({})
         }
@@ -156,6 +181,7 @@ app.post('/addToCart', async (req, res) => {
     }
 })
 
+// Get all the cart products
 app.get('/cart', async (req, res) => {
     try {
         const cart = await Cart.find({})
@@ -170,7 +196,10 @@ app.get('/cart', async (req, res) => {
 
 
 
-// Orders
+
+/// Orders
+
+// Place order
 app.post('/placeOrder', auth, async (req, res) => {
     try {
         const { userId, products, amount, paymentMethod } = req.body
@@ -184,7 +213,7 @@ app.post('/placeOrder', auth, async (req, res) => {
         })
 
         await Cart.deleteMany({})
-        res.status(200).send("Order has been placed successfully\n" + order)
+        res.status(200).send("Order has been placed successfully")
     } catch (error) {
         console.log(error);
     }

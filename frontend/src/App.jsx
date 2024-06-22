@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
-import { Outlet, useLocation, Link, Routes, Route, BrowserRouter } from "react-router-dom"
+import { Link, Routes, Route, BrowserRouter } from "react-router-dom"
 
-import axios from "axios";
 
 import { About, Cart, Checkout, Contact, Home, Login, Product, Shop, Signup, WhyUs } from "./Pages";
 import { ErrorBoundary } from "./Components/ErrorBoundary";

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Footer, Navbar } from '../Components'
+import { useNavigate } from 'react-router-dom'
+
 import axios from 'axios'
+
+import { Footer, Navbar } from '../Components'
 import { url } from '../App'
 
 export const Cart = ({ cartChange }) => {
@@ -8,12 +11,18 @@ export const Cart = ({ cartChange }) => {
     const [subtotal, setSubtotal] = useState(0)
     const [points, setPoints] = useState(null)
     const [discount, setDiscount] = useState(0)
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState(null)
+    const navigate = useNavigate()
 
 
     useEffect(() => {
         window.scrollTo(0, 0)
         getProducts()
+
+        let priceOff = localStorage.getItem('discount')
+        if (priceOff) {
+            setDiscount(Number.parseInt(priceOff))
+        }
 
         axios.get(`${url}/user`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -62,29 +71,45 @@ export const Cart = ({ cartChange }) => {
     }
 
     const submit = () => {
-        window.localStorage.setItem('discount', discount.toFixed(2))
-        cart.forEach(product => {
-            axios.put(`http://localhost:3000/cart/${product.id}`, { ...product, quantity: product.quantity })
-                .then(res => console.info(res))
-                .catch(err => console.error(err))
+        const products = cart.map(item => {
+            return {
+                productId: item.product._id,
+                quantity: item.quantity
+            }
         })
-        axios.put(`${url}/users/${user.id}`, { ...user, loyaltyPoints: user.loyaltyPoints - points })
-        window.location.href = '/checkout'
+
+        console.log({ products });
+        axios.post(`${url}/addToCart`, { products })
+            .then(res => {
+                console.log(res);
+                navigate('/checkout')
+            })
+            .catch(err => {
+                console.error(err)
+                console.error(err?.response?.data)
+            })
     }
 
     const usePoints = (e) => {
         e.preventDefault()
         debugger
-        if (user.loyaltyPoints >= points && points > 9) {
-            let ask = confirm("Once you entered it'll not be back")
-            if (ask) {
-                setDiscount(subtotal - (subtotal - (points / 10)))
-                e.target.children[2].value = ''
-            }
+        if (!user) {
+            let signIn = confirm("Authentication is necessary to proceed. Would you like to sign in at this moment?")
+            signIn ? navigate('/login') : null
         } else {
-            if (user.loyaltyPoints <= points) alert("You don't have enough points")
-            else if (points < 9) alert("You must enter points more than 9")
+            if (user.loyaltyPoints >= points && points > 9) {
+                let ask = confirm("Please note that once loyalty points are redeemed, they cannot be refunded.")
+                if (ask) {
+                    let priceOff = subtotal - (subtotal - (points / 10))
+                    setDiscount(priceOff)
+                    localStorage.setItem('discount', JSON.stringify(priceOff))
+                }
+            } else {
+                if (user.loyaltyPoints <= points) alert("You don't have enough points")
+                else if (points < 9) alert("You must enter points more than 9")
+            }
         }
+        e.target.children[2].value = ''
     }
 
     const getSubtotal = (items) => setSubtotal(items.reduce((total, item) =>
@@ -145,8 +170,18 @@ export const Cart = ({ cartChange }) => {
                         <form onSubmit={usePoints} className='space-y-3 text-center border-b-4 pb-2'>
                             <h4 className='text-2xl font-semibold sm:font-bold'>Use Loyalty Points</h4>
                             <center className='text-sm text-gray-600'>10 points = Rs. 1</center>
-                            <input type="number" className='border-2 w-full rounded-lg px-2 sm:px-3 py-1' placeholder='Enter Loyalty points you want to use' min={1} required onChange={(e) => setPoints(Number(e.target.value))} />
-                            <button type='submit' className='px-4 py-3 bg-[--theme-secondary] font-bold rounded-lg w-1/2 hover:bg-[--theme-secondary-hover] transition-colors text-white'>Submit</button>
+
+                            <input type="number"
+                                className='border-2 w-full rounded-lg px-2 sm:px-3 py-1'
+                                placeholder='Enter Loyalty points you want to use'
+                                min='10' required
+                                onChange={(e) => setPoints(Number(e.target.value))}
+                            />
+
+                            <button type='submit'
+                                className='px-4 py-3 bg-[--theme-secondary] font-bold rounded-lg w-1/2 hover:bg-[--theme-secondary-hover] transition-colors text-white'>
+                                Submit
+                            </button>
                         </form>
 
 

@@ -13,7 +13,6 @@ const auth = (req, res, next) => {
     try {
         const user = jwt.verify(token, SECRET_KEY);
         req.user = user;
-        console.log(user);
         next();
     } catch (error) {
         console.error("JWT verification error:", error);

@@ -9,6 +9,7 @@ const orderSchema = new Schema({
     amount: {
         subtotal: Number,
         discount: { type: Number, default: 0 },
+        deliveryCharge: Number,
         total: Number
     },
     paymentMethod: {
@@ -18,7 +19,6 @@ const orderSchema = new Schema({
             cardNumber: String,
             cvv: String,
             expiryDate: String,
-            otp: String
         }
     }
 })
