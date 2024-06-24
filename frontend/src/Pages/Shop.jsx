@@ -3,9 +3,10 @@ import { Footer, Navbar } from '../Components'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { url } from '../App'
+import { useCartContext } from '../Contexts/CartContext'
 
 export const Shop = () => {
-
+    const { setUpdate } = useCartContext()
     const [added, setAdded] = useState([])
     const [products, setProducts] = useState([])
 
@@ -14,7 +15,16 @@ export const Shop = () => {
         axios.get(`${url}/products`)
             .then(res => {
                 setProducts(res.data);
-                res.data.forEach(() => added.push(false));
+
+                const initialAdded = new Array(res.data.length).fill(false);
+
+                const localProducts = JSON.parse(localStorage.getItem('cart'));
+                if (localProducts) {
+                    res.data.forEach((product, i) => {
+                        initialAdded[i] = localProducts.some(localProduct => localProduct.product._id === product._id)
+                    })
+                }
+                setAdded(initialAdded);
             })
     }, [])
 
@@ -24,21 +34,13 @@ export const Shop = () => {
             newAdded[i] = true;
             return newAdded;
         });
-        axios.get(`${url}/cart`)
-            .then(response => {
-                let itemFound = false
-                response.data.length === 0 ? axios.post(`${url}/cart`, product) : null
-                for (let i = 0; i < response.data.length; i++) {
-                    const element = response.data[i];
-                    if (element.id === product.id) {
-                        const quan = element.quantity
-                        axios.put(`${url}/cart/${product.id}`, { ...product, quantity: quan + 1 })
-                        itemFound = true
-                        break
-                    } else itemFound = false
-                }
-                if (!itemFound) axios.post(`${url}/cart`, product)
-            }).catch(err => console.error(err))
+
+        let cart;
+        let cartLocal = JSON.parse(localStorage.getItem('cart'))
+        cart = cartLocal ? cartLocal : []
+        cart.push({ quantity: 1, product })
+        localStorage.setItem('cart', JSON.stringify(cart))
+        setUpdate(cart.length)
     }
 
     return (
@@ -65,7 +67,7 @@ export const Shop = () => {
                 <div className='grid sm:grid-cols-3 gap-5 p-5'>
                     {products.map((el, i) => (
                         <div className='flex flex-col items-center border-2 border-gray-100 rounded-lg py-3' key={el.id}>
-                            <img src={el.url} alt="" />
+                            <img src={el.img} alt={el.productName} title={el.productName} />
                             <h3 className='sm:text-2xl font-semibold'>{el.productName}</h3>
                             <small className='text-gray-600 text-lg mb-1 sm:mb-3'>Rs. {el.price}</small>
                             <div className='flex w-full px-5 gap-x-5'>
@@ -74,7 +76,7 @@ export const Shop = () => {
                                     search: `?id=${el.id}`,
                                 }} className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>More Info</Link>
                                 {!added[i] && <button className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors' onClick={() => addToCart(i, el)}>Add to cart</button>}
-                                {added[i] && <Link to='/cart' className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>Go to cart</Link>}
+                                {added[i] && <Link to='/cart' className='w-full bg-[--theme-secondary] text-center text-white py-2 hover:bg-[--theme-secondary-hover] transition-colors'>Go to cart</Link>}
                             </div>
                         </div>
                     ))}

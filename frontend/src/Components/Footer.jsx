@@ -16,12 +16,19 @@ const Footer = () => {
                     </div>
                 </div>
                 <div>
-                    <h4 className='font-bold text-2xl'>About us</h4>
-                    <p className='font-semibold sm:text-xl text-justify'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi, recusandae. Lorem ipsum dolor sit amet consectetur, adipisicing elit.</p>
+                    <h4 className="font-bold text-2xl">Links</h4>
+                    <ul className='space-y-1'>
+                        <li><Link to='/' className='sm:text-xl'>Home</Link></li>
+                        <li><Link to='/about' className='sm:text-xl'>About us</Link></li>
+                        <li><Link to='/shop' className='sm:text-xl'>Shop</Link></li>
+                        <li><Link to='/whyus' className='sm:text-xl'>Why us</Link></li>
+                        <li><Link to='/contact' className='sm:text-xl'>Contact</Link></li>
+                    </ul>
+
                 </div>
                 <div>
                     <h4 className='font-bold text-2xl'>Contact us</h4>
-                    <p className='font-semibold sm:text-xl text-justify'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi, recusandae. Lorem ipsum dolor sit amet consectetur, adipisicing elit.</p>
+                    <p className='sm:text-xl text-justify'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi, recusandae. Lorem ipsum dolor sit amet consectetur, adipisicing elit.</p>
                 </div>
                 <div className='space-y-3'>
                     <h4 className='font-bold text-2xl'>Newsletter</h4>
@@ -31,7 +38,15 @@ const Footer = () => {
             </div>
             <div>
                 <hr />
-                <p className='sm:text-xl sm:text-center mt-3 sm:mt-5'>&copy; 2019 All Rights Reserved. Design by <a href="https://github.com/anasrazaofficial">Syed Anas Raza</a></p>
+                <p className='sm:text-xl sm:text-center mt-3 sm:mt-5'>
+                    &copy; 2024 All Rights Reserved. Design by
+                    &nbsp;
+                    <a href="https://discoveranas.vercel.app"
+                        target='_blank'
+                        title='Go to portfolio'
+                        className='font-bold'
+                    >Syed Anas Raza</a>
+                </p>
             </div>
         </footer>
     )

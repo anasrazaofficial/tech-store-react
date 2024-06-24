@@ -59,7 +59,7 @@ export const Checkout = () => {
             }
         }).catch(err => {
             console.error(err)
-            console.error(err?.response?.data)
+            alert(err?.response?.data)
         })
 
 
@@ -67,7 +67,7 @@ export const Checkout = () => {
             .then(cartRes => setCart(cartRes.data))
             .catch(err => {
                 console.error(err)
-                console.error(err?.response?.data)
+                alert(err?.response?.data)
             })
         let cartLocal = JSON.parse(localStorage.getItem('cart'))
         setSubtotal(cartLocal?.reduce((total, item) =>
@@ -92,7 +92,6 @@ export const Checkout = () => {
 
             // Payment method
             let paymentMethod;
-            console.log(payMeth)
             Object.keys(payMeth).forEach(key => {
                 if (payMeth[key].isSelected) {
                     paymentMethod = {
@@ -120,20 +119,20 @@ export const Checkout = () => {
 
             axios.post(`${url}/placeOrder`, payload, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            }).then(res => {
-                console.log(res.data)
+            }).then(orderRes => {
+                alert(orderRes.data)
 
                 axios.put(`${url}/user/${user.user_id}`,
                     { loyaltyPoints },
                     { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-                ).then(res => console.log(res.data)).catch(err => console.log(err))
+                ).then(userRes => console.log(userRes.data)).catch(err => console.log(err))
 
                 localStorage.removeItem('cart')
                 localStorage.removeItem('discount')
                 alert("Order has been placed successfully")
             }).catch(err => {
                 console.error(err)
-                console.error(err?.response?.data)
+                alert(err?.response?.data)
             })
         } else {
             alert("There is nothing to order in the cart")

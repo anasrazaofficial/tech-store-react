@@ -3,19 +3,20 @@ import { Link, Routes, Route, BrowserRouter } from "react-router-dom"
 
 
 import { About, Cart, Checkout, Contact, Home, Login, Product, Shop, Signup, WhyUs } from "./Pages";
-import { ErrorBoundary } from "./Components/ErrorBoundary";
+import { useCartContext } from "./Contexts/CartContext";
 
 
 function App() {
   const [cart, setCart] = useState([]);
-  const [cartLength, setCartLength] = useState(0)
+  const { update } = useCartContext()
+
 
   useEffect(() => {
     let cart = localStorage.getItem('cart')
     if (cart) {
       setCart(JSON.parse(cart))
     }
-  }, [cartLength]);
+  }, [update]);
 
 
   return (
@@ -27,105 +28,67 @@ function App() {
 
               <Route
                 path="/"
-                element={
-                  <ErrorBoundary>
-                    <Home cartChange={setCartLength} />
-                  </ErrorBoundary>
-                }
+                element={<Home />}
               />
 
               <Route
                 path="/login"
-                element={
-                  <ErrorBoundary>
-                    <Login />
-                  </ErrorBoundary>
-                }
+                element={<Login />}
               />
 
               <Route
                 path="/signup"
-                element={
-                  <ErrorBoundary>
-                    <Signup />
-                  </ErrorBoundary>
-                }
+                element={<Signup />}
               />
 
               <Route
                 path="/about"
-                element={
-                  <ErrorBoundary>
-                    <About />
-                  </ErrorBoundary>
-                }
+                element={<About />}
               />
 
               <Route
                 path="/shop"
-                element={
-                  <ErrorBoundary>
-                    <Shop />
-                  </ErrorBoundary>
-                }
+                element={<Shop />}
               />
 
               <Route
                 path="/whyus"
-                element={
-                  <ErrorBoundary>
-                    <WhyUs />
-                  </ErrorBoundary>
-                }
+                element={<WhyUs />}
               />
 
               <Route
                 path="/contact"
-                element={
-                  <ErrorBoundary>
-                    <Contact />
-                  </ErrorBoundary>
-                }
+                element={<Contact />}
               />
 
               <Route
                 path="/cart"
-                element={
-                  <ErrorBoundary>
-                    <Cart cartChange={setCartLength} />
-                  </ErrorBoundary>
-                }
+                element={<Cart />}
               />
 
               <Route
                 path="/product"
-                element={
-                  <ErrorBoundary>
-                    <Product cartChange={setCartLength} />
-                  </ErrorBoundary>
-                }
+                element={<Product />}
               />
 
               <Route
                 path="/checkout"
-                element={
-                  <ErrorBoundary>
-                    <Checkout />
-                  </ErrorBoundary>
-                }
+                element={<Checkout />}
               />
 
             </Routes>
 
           </main>
-          {cart.length !== 0 && (
-            <div className="fixed bottom-3 sm:bottom-5 right-3 sm:right-5">
-              <span className="absolute top-0 -right-2 bg-[--theme-secondary] rounded-full px-1.5 text-sm">{cart.length}</span>
-              <Link to='/cart' className="w-12 h-12 bg-[--theme-primary] rounded-full flex justify-center items-center hover:bg-[--bg-primary-hover]">
-                <img src="src\Assets\icons\cart.svg" className="w-3/5" alt="" />
-              </Link>
-            </div>
-          )}
+          {(cart.length !== 0 &&
+            window.location.pathname !== '/signup' &&
+            window.location.pathname !== '/login') && (
+              <div className="fixed bottom-3 sm:bottom-5 right-3 sm:right-5">
+                <span className="absolute top-0 -right-2 bg-[--theme-secondary] rounded-full px-1.5 text-sm">{cart.length}</span>
+                <Link to='/cart' className="w-12 h-12 bg-[--theme-primary] rounded-full flex justify-center items-center hover:bg-[--bg-primary-hover]">
+                  <img src="src\Assets\icons\cart.svg" className="w-3/5" alt="" />
+                </Link>
+              </div>
+            )}
         </div>
       </BrowserRouter>
     </>

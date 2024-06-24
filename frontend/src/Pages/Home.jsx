@@ -3,11 +3,13 @@ import { Navbar, Footer } from '../Components'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { url } from '../App'
+import { useCartContext } from '../Contexts/CartContext'
 
 
-export const Home = ({ cartChange }) => {
+export const Home = () => {
     const [added, setAdded] = useState([])
     const [products, setProducts] = useState([])
+    const { setUpdate } = useCartContext()
 
 
     useEffect(() => {
@@ -41,7 +43,7 @@ export const Home = ({ cartChange }) => {
         cart = cartLocal ? cartLocal : []
         cart.push({ quantity: 1, product })
         localStorage.setItem('cart', JSON.stringify(cart))
-        cartChange(cart.length)
+        setUpdate(cart.length)
     }
 
 
@@ -90,6 +92,10 @@ export const Home = ({ cartChange }) => {
             </div>
 
 
+
+
+
+            {/* Our Products */}
             <div className='px-5 sm:px-20 py-8 sm:py-14 bg-gray-100 space-y-5 sm:space-y-8 mt-8 sm:mt-14'>
                 <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5'>Our Products</h2>
                 <div className='bg-white grid sm:grid-cols-3 gap-5 p-5'>
@@ -105,7 +111,7 @@ export const Home = ({ cartChange }) => {
                                 }} className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>More Info</Link>
 
                                 {!added[i] && <button className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors' onClick={() => addToCart(i, el)}>Add to cart</button>}
-                                {added[i] && <Link to='/cart' className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>Go to cart</Link>}
+                                {added[i] && <Link to='/cart' className='w-full bg-[--theme-secondary] text-center text-white py-2 hover:bg-[--theme-secondary-hover] transition-colors'>Go to cart</Link>}
                             </div>
                         </div>
                     ))}
@@ -117,6 +123,10 @@ export const Home = ({ cartChange }) => {
             </div>
 
 
+
+
+
+            {/* Every Computer and laptop */}
             <div className='px-5 sm:px-20 py-8 sm:py-14 bg-banner mt-8 sm:mt-14 text-white sm:grid grid-cols-2'>
                 <div className='space-y-8'>
                     <p className='sm:font-semibold sm:text-xl'>Every Computer and laptop</p>
@@ -127,7 +137,6 @@ export const Home = ({ cartChange }) => {
                 </div>
                 <img src="\src\Assets\pc.png" alt="" className='mt-8 sm:mt-0' />
             </div>
-
 
 
 
@@ -170,7 +179,6 @@ export const Home = ({ cartChange }) => {
 
 
 
-
             {/* CUSTOMER REVIEW */}
             <div className='px-5 sm:px-20 bg-banner py-16 sm:py-28 text-white space-y-5 sm:space-y-8'>
                 <h2 className='text-3xl sm:text-4xl font-bold border-b border-white text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5'>Contact Now</h2>
@@ -185,6 +193,10 @@ export const Home = ({ cartChange }) => {
                 </form>
             </div>
 
+
+
+
+            {/* Footer */}
             <Footer />
         </div>
     )

@@ -39,7 +39,6 @@ export const Signup = () => {
         delete payload.country
         delete payload.city
         axios.post(`${url}/signup`, payload).then(() => {
-            debugger
             alert("You have been successfully registered.")
             navigate('/')
         }).catch(err => {

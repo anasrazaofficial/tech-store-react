@@ -3,11 +3,13 @@ import { Navbar, Footer } from '../Components'
 import axios from 'axios';
 import { url } from '../App';
 import { useNavigate } from 'react-router-dom';
+import { useCartContext } from '../Contexts/CartContext';
 
-export const Product = ({ cartChange }) => {
+export const Product = () => {
     const [product, setProduct] = useState({})
     const [isAdded, setisAdded] = useState(false)
     const navigate = useNavigate()
+    const { setUpdate } = useCartContext()
 
 
     useEffect(() => {
@@ -31,7 +33,7 @@ export const Product = ({ cartChange }) => {
             cart.push({ quantity: 1, product })
             localStorage.setItem('cart', JSON.stringify(cart))
             setisAdded(true)
-            cartChange(cart.length)
+            setUpdate(cart.length)
         } else {
             navigate('/cart')
         }

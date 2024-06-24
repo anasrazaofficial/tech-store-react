@@ -1,10 +1,13 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { url } from '../App';
+import { useCartContext } from '../Contexts/CartContext';
 
 const Navbar = () => {
     const [nav, setNav] = useState(false)
+    const navigate = useNavigate()
+    const { setUpdate } = useCartContext()
 
     useEffect(() => {
         const updateNavState = () => {
@@ -23,17 +26,10 @@ const Navbar = () => {
 
     const logout = () => {
         window.localStorage.clear()
-        axios.get(`${url}/cart`)
-            .then(res => {
-                res.data.forEach(cart => axios.delete(`${url}/cart/${cart.id}`));
-            }).catch(err => console.error(err))
-        axios.get(`${url}/users`)
-            .then((res) => {
-                res.data.map(el => {
-                    axios.put(`${url}/users/${el.id}`, { ...el, isLoggedin: false })
-                })
-                window.location.href = '/'
-            }).catch(err => console.error(err))
+        setUpdate(0)
+        axios.delete(`${url}/logout`).then(() => {
+            navigate('/login')
+        }).catch(err => console.error(err))
     }
 
     return (

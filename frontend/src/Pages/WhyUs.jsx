@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Footer, Navbar } from '../Components'
 
 export const WhyUs = () => {
+    useEffect(() => window.scrollTo(0, 0), [])
+
     return (
         <div>
-            
-            
+
+
             <header className='bg-banner px-5 sm:px-20'>
                 <Navbar />
             </header>
@@ -38,7 +40,7 @@ export const WhyUs = () => {
                 </div>
             </div>
 
-            <Footer/>
+            <Footer />
         </div>
     )
 }

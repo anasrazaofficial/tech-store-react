@@ -94,7 +94,7 @@ app.post('/login', async (req, res) => {
         })
 
 
-        return res.status(200).json(user)
+        return res.status(200).send("Login successful")
     } catch (error) {
         console.error(error);
     }
@@ -175,7 +175,7 @@ app.post('/addToCart', async (req, res) => {
         }
 
         const cart = await Cart.create({ products })
-        return res.status(200).send("Product added to cart successfully\n" + cart)
+        return res.status(200).send("Product added to cart successfully")
     } catch (error) {
         console.log(error);
     }
@@ -192,6 +192,11 @@ app.get('/cart', async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+})
+
+app.delete('/logout', async (req, res) => {
+    await Cart.deleteMany({})
+    res.status(200).send("Cart has been cleaned successfully")
 })
 
 

@@ -5,14 +5,16 @@ import axios from 'axios'
 
 import { Footer, Navbar } from '../Components'
 import { url } from '../App'
+import { useCartContext } from '../Contexts/CartContext'
 
-export const Cart = ({ cartChange }) => {
+export const Cart = () => {
     const [cart, setCart] = useState([])
     const [subtotal, setSubtotal] = useState(0)
     const [points, setPoints] = useState(null)
     const [discount, setDiscount] = useState(0)
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
+    const { setUpdate } = useCartContext()
 
 
     useEffect(() => {
@@ -30,7 +32,7 @@ export const Cart = ({ cartChange }) => {
             setUser(res.data)
         }).catch(err => {
             console.error(err)
-            console.error(err?.response?.data)
+            alert(err?.response?.data)
         })
     }, [])
 
@@ -67,7 +69,7 @@ export const Cart = ({ cartChange }) => {
         updatedCart.splice(index, 1)
         setCart(updatedCart)
         localStorage.setItem('cart', JSON.stringify(updatedCart))
-        cartChange(updatedCart.length)
+        setUpdate(updatedCart.length)
     }
 
     const submit = () => {
@@ -78,7 +80,6 @@ export const Cart = ({ cartChange }) => {
             }
         })
 
-        console.log({ products });
         axios.post(`${url}/addToCart`, { products })
             .then(res => {
                 console.log(res);
@@ -86,13 +87,13 @@ export const Cart = ({ cartChange }) => {
             })
             .catch(err => {
                 console.error(err)
-                console.error(err?.response?.data)
+                alert(err?.response?.data)
             })
     }
 
     const usePoints = (e) => {
         e.preventDefault()
-        debugger
+
         if (!user) {
             let signIn = confirm("Authentication is necessary to proceed. Would you like to sign in at this moment?")
             signIn ? navigate('/login') : null
