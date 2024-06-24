@@ -3,9 +3,13 @@
 
 :root {
   --theme-primary: #4842a2;
-  --bg-primary-hover:#302c6d;
+  --bg-primary-hover: #302c6d;
   --theme-secondary: #48ca95;
   --theme-secondary-hover: #08ae6a;
+}
+
+button {
+  @apply disabled:brightness-75 disabled:line-through
 }
 
 .bg-banner {

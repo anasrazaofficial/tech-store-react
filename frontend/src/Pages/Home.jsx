@@ -100,7 +100,7 @@ export const Home = () => {
                 <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5'>Our Products</h2>
                 <div className='bg-white grid sm:grid-cols-3 gap-5 p-5'>
                     {products.slice(0, 6).map((el, i) => (
-                        <div key={el.id} className='flex flex-col items-center border-2 border-gray-100 rounded-lg py-3'>
+                        <div key={el._id} className='flex flex-col items-center border-2 border-gray-100 rounded-lg py-3'>
                             <img src={el.img} alt={el.productName} title={el.productName} />
                             <h3 className='sm:text-2xl font-semibold'>{el.productName}</h3>
                             <small className='text-gray-600 text-lg mb-1 sm:mb-3'>Rs. {el.price}</small>

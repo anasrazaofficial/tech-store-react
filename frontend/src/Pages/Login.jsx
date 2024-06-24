@@ -1,6 +1,10 @@
-import axios from 'axios'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+import axios from 'axios'
+
 import { url } from '../App'
 
 export const Login = () => {
@@ -10,18 +14,28 @@ export const Login = () => {
     })
     const [pass, setPass] = useState(false)
     const navigate = useNavigate()
+    const MySwal = withReactContent(Swal)
+
 
     const loginUser = (e) => {
         e.preventDefault()
         axios.post(`${url}/login`, user)
             .then(res => {
-                alert(res.data)
-                localStorage.setItem('token', res.data?.token)
-                navigate('/')
+                MySwal.fire({
+                    title: "Login successful",
+                    icon: "success",
+                    preConfirm: () => {
+                        localStorage.setItem('token', res.data?.token)
+                        navigate('/')
+                    }
+                })
             })
             .catch(err => {
                 console.error(err)
-                alert(err?.response?.data)
+                MySwal.fire({
+                    title: err?.response?.data,
+                    icon: "error"
+                })
             })
     }
 

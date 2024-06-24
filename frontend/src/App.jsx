@@ -7,14 +7,17 @@ import { useCartContext } from "./Contexts/CartContext";
 
 
 function App() {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(null);
   const { update } = useCartContext()
 
 
   useEffect(() => {
-    let cart = localStorage.getItem('cart')
-    if (cart) {
-      setCart(JSON.parse(cart))
+    let cartLocal = localStorage.getItem('cart')
+    debugger
+    if (cartLocal) {
+      setCart(JSON.parse(cartLocal))
+    } else {
+      setCart(null)
     }
   }, [update]);
 
@@ -79,7 +82,7 @@ function App() {
             </Routes>
 
           </main>
-          {(cart.length !== 0 &&
+          {(cart &&
             window.location.pathname !== '/signup' &&
             window.location.pathname !== '/login') && (
               <div className="fixed bottom-3 sm:bottom-5 right-3 sm:right-5">

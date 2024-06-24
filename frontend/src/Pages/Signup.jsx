@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 import axios from 'axios'
 
 import { url } from '../App'
@@ -21,11 +23,16 @@ export const Signup = () => {
     })
     const [pass, setPass] = useState(false)
     const [conPass, setConPass] = useState(false)
+    const MySwal = withReactContent(Swal)
+
 
     const signupUser = (e) => {
         e.preventDefault()
         if (user.password !== user.confirmPassword) {
-            return alert("Passwords do not match")
+            return MySwal.fire({
+                title: "Passwords do not match",
+                icon: "error"
+            })
         }
         let payload = {
             ...user, address: {
@@ -39,11 +46,17 @@ export const Signup = () => {
         delete payload.country
         delete payload.city
         axios.post(`${url}/signup`, payload).then(() => {
-            alert("You have been successfully registered.")
-            navigate('/')
+            MySwal.fire({
+                title: "You have been successfully registered.",
+                icon: "success",
+                preConfirm: () => navigate('/')
+            })
         }).catch(err => {
             console.log(err);
-            alert(err?.response?.data)
+            MySwal.fire({
+                title: err?.response?.data,
+                icon: "error"
+            })
         })
 
     }

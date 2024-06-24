@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Navbar, Footer } from '../Components'
-import axios from 'axios';
-import { url } from '../App';
 import { useNavigate } from 'react-router-dom';
+
+import axios from 'axios';
+
+import checkMark from '../Assets/icons/checkmark.svg'
+import { url } from '../App';
+import { Navbar, Footer } from '../Components'
 import { useCartContext } from '../Contexts/CartContext';
 
 export const Product = () => {
@@ -55,9 +58,12 @@ export const Product = () => {
                         <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] pb-4 sm:pb-6 uppercase sm:w-fit'>{product.productName}</h2>
                         <p className='text-gray-600'>{product.description}</p>
                     </div>
-                    <ul>
+                    <ul className='space-y-2'>
                         {product?.features?.map((feature, i) => (
-                            <li key={feature._id ? feature._id.$oid : feature.feature}>{typeof feature === 'string' ? feature : feature.feature}</li>
+                            <li key={i} className='flex gap-x-1 items-center'>
+                                <img src={checkMark} alt="Check icon" className='w-4 h-4' />
+                                <span>{feature}</span>
+                            </li>
                         ))}
                     </ul>
                     <p className='text-lg text-gray-700 font-bold mt-2'>Rs. {product.price}</p>

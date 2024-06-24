@@ -94,7 +94,7 @@ app.post('/login', async (req, res) => {
         })
 
 
-        return res.status(200).send("Login successful")
+        return res.status(200).json(user)
     } catch (error) {
         console.error(error);
     }
@@ -108,6 +108,7 @@ app.get('/user', auth, (req, res) => {
     return res.status(401).send("Sign in required")
 })
 
+// To update loyalty points of an existing user at placing order 
 app.put('/user/:id', auth, async (req, res) => {
     let { loyaltyPoints } = req.body
     const id = req.params.id
@@ -165,8 +166,8 @@ app.get('/product', async (req, res) => {
 app.post('/addToCart', async (req, res) => {
     try {
         const { products } = req.body
-        if (!products) {
-            return res.status(404).send("Products not found")
+        if (products?.length === 0) {
+            return res.status(404).send("No products were found in your cart")
         }
 
         let existingProduct = await Cart.find({})
@@ -186,7 +187,7 @@ app.get('/cart', async (req, res) => {
     try {
         const cart = await Cart.find({})
         if (cart.length == 0) {
-            return res.status(200).send("Cart is empty")
+            return res.status(404).send("Cart is empty")
         }
         return res.status(200).send(cart)
     } catch (error) {
@@ -212,7 +213,7 @@ app.post('/placeOrder', auth, async (req, res) => {
             return res.status(401).send("All fields are required")
         }
 
-        const order = await Order.create({
+        await Order.create({
             userId: req.user.user_id,
             products, amount, paymentMethod
         })

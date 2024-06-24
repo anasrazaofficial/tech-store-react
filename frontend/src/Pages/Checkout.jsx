@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Navbar, Footer } from '../Components'
+
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 import axios from 'axios'
+
+import { Navbar, Footer } from '../Components'
 import { url } from '../App'
+import { useNavigate } from 'react-router-dom'
+import { useCartContext } from '../Contexts/CartContext'
 
 export const Checkout = () => {
     const [cart, setCart] = useState(null)
@@ -9,6 +15,9 @@ export const Checkout = () => {
     const [subtotal, setSubtotal] = useState(0)
     const [discount, setDiscount] = useState(0)
     const [deliveryCharge, setDeliveryCharges] = useState(100)
+    const navigate = useNavigate()
+    const MySwal = withReactContent(Swal)
+    const { setUpdate } = useCartContext()
     const [payMeth, setPayMeth] = useState({
         jazzCash: {
             method: "Jazz Cash",
@@ -50,25 +59,31 @@ export const Checkout = () => {
 
         axios.get(`${url}/user`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }).then(res => {
-            setUser(res.data)
-
-            const priceOff = localStorage.getItem('discount')
-            if (priceOff) {
-                setDiscount(Number.parseInt(priceOff))
-            }
-        }).catch(err => {
+        }).then(res => setUser(res.data)).catch(err => {
             console.error(err)
-            alert(err?.response?.data)
+            console.log(err?.response?.data)
         })
 
 
-        axios.get(`${url}/cart`)
-            .then(cartRes => setCart(cartRes.data))
-            .catch(err => {
-                console.error(err)
-                alert(err?.response?.data)
+        axios.get(`${url}/cart`).then(res => {
+            setCart(res.data)
+            if (res.data.length === 0) {
+                setDiscount(0)
+            } else {
+                const priceOff = localStorage.getItem('discount')
+                if (priceOff) {
+                    setDiscount(Number.parseInt(priceOff))
+                }
+            }
+        }).catch(err => {
+            console.error(err)
+            MySwal.fire({
+                title: err?.response?.data,
+                icon: "error"
             })
+        })
+
+
         let cartLocal = JSON.parse(localStorage.getItem('cart'))
         setSubtotal(cartLocal?.reduce((total, item) =>
             total += (item.product.price * item.quantity),
@@ -79,7 +94,8 @@ export const Checkout = () => {
 
     const submit = (e) => {
         e.preventDefault()
-        if (cart !== "Cart is empty") {
+        if (cart) {
+
             // Products
             let cartLocal = JSON.parse(localStorage.getItem('cart'))
             let products = cart[0].products.map((product, i) => {
@@ -105,6 +121,7 @@ export const Checkout = () => {
             let loyaltyPoints = user.loyaltyPoints - (discount * 10)
             loyaltyPoints += Number(subtotal.toString().slice(0, subtotal.toString().length - 3)) * 100
 
+            // Finalizing payload
             const payload = {
                 userId: user.user_id,
                 products,
@@ -117,25 +134,46 @@ export const Checkout = () => {
                 paymentMethod
             }
 
+            // Hitting API request
             axios.post(`${url}/placeOrder`, payload, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             }).then(orderRes => {
-                alert(orderRes.data)
 
                 axios.put(`${url}/user/${user.user_id}`,
                     { loyaltyPoints },
                     { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-                ).then(userRes => console.log(userRes.data)).catch(err => console.log(err))
+                ).then(userRes => console.log(userRes.data)).catch(err => {
+                    MySwal.fire({
+                        title: err?.response?.data,
+                        icon: "error"
+                    })
+                    console.log(err)
+                })
 
                 localStorage.removeItem('cart')
                 localStorage.removeItem('discount')
-                alert("Order has been placed successfully")
+                setUpdate(0)
+
+                MySwal.fire({
+                    title: orderRes.data,
+                    icon: "success",
+                    preConfirm: () => navigate('/')
+                })
             }).catch(err => {
                 console.error(err)
-                alert(err?.response?.data)
+                MySwal.fire({
+                    title: err?.response?.data,
+                    icon: "error"
+                })
             })
         } else {
-            alert("There is nothing to order in the cart")
+            MySwal.fire({
+                title: "Cart is empty. Would you like to browse our products?",
+                icon: "error",
+                confirmButtonText: "Yes",
+                showDenyButton: true,
+                preConfirm: () => navigate('/shop')
+            })
         }
     }
 
@@ -287,7 +325,7 @@ export const Checkout = () => {
                         }
 
 
-                        <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white w-full disabled:brightness-75'
+                        <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white w-full'
                             disabled={!isDisable} >Place order</button>
                     </form>
 

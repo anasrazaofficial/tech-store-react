@@ -66,14 +66,14 @@ export const Shop = () => {
                 <h2 className='text-3xl sm:text-4xl font-bold border-b border-[--theme-secondary] text-center pb-4 sm:pb-6 mx-auto uppercase sm:w-fit px-5'>Shop</h2>
                 <div className='grid sm:grid-cols-3 gap-5 p-5'>
                     {products.map((el, i) => (
-                        <div className='flex flex-col items-center border-2 border-gray-100 rounded-lg py-3' key={el.id}>
+                        <div key={el._id} className='flex flex-col items-center border-2 border-gray-100 rounded-lg py-3'>
                             <img src={el.img} alt={el.productName} title={el.productName} />
                             <h3 className='sm:text-2xl font-semibold'>{el.productName}</h3>
                             <small className='text-gray-600 text-lg mb-1 sm:mb-3'>Rs. {el.price}</small>
                             <div className='flex w-full px-5 gap-x-5'>
                                 <Link to={{
                                     pathname: '/product',
-                                    search: `?id=${el.id}`,
+                                    search: `?id=${el._id}`,
                                 }} className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors'>More Info</Link>
                                 {!added[i] && <button className='w-full bg-black text-center text-white py-2 hover:bg-[#313131] transition-colors' onClick={() => addToCart(i, el)}>Add to cart</button>}
                                 {added[i] && <Link to='/cart' className='w-full bg-[--theme-secondary] text-center text-white py-2 hover:bg-[--theme-secondary-hover] transition-colors'>Go to cart</Link>}

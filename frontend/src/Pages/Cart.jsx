@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 import axios from 'axios'
 
 import { Footer, Navbar } from '../Components'
@@ -15,6 +17,7 @@ export const Cart = () => {
     const [user, setUser] = useState(null)
     const navigate = useNavigate()
     const { setUpdate } = useCartContext()
+    const MySwal = withReactContent(Swal)
 
 
     useEffect(() => {
@@ -32,7 +35,7 @@ export const Cart = () => {
             setUser(res.data)
         }).catch(err => {
             console.error(err)
-            alert(err?.response?.data)
+            console.error(err?.response?.data)
         })
     }, [])
 
@@ -71,7 +74,6 @@ export const Cart = () => {
         localStorage.setItem('cart', JSON.stringify(updatedCart))
         setUpdate(updatedCart.length)
     }
-
     const submit = () => {
         const products = cart.map(item => {
             return {
@@ -87,7 +89,10 @@ export const Cart = () => {
             })
             .catch(err => {
                 console.error(err)
-                alert(err?.response?.data)
+                MySwal.fire({
+                    title: err?.response?.data,
+                    icon: "error"
+                })
             })
     }
 
@@ -95,19 +100,36 @@ export const Cart = () => {
         e.preventDefault()
 
         if (!user) {
-            let signIn = confirm("Authentication is necessary to proceed. Would you like to sign in at this moment?")
-            signIn ? navigate('/login') : null
+            MySwal.fire({
+                title: "Authentication is necessary to proceed. Would you like to sign in at this moment?",
+                icon: "question",
+                showDenyButton: true,
+                preConfirm: () => navigate('/login')
+            })
         } else {
             if (user.loyaltyPoints >= points && points > 9) {
-                let ask = confirm("Please note that once loyalty points are redeemed, they cannot be refunded.")
-                if (ask) {
-                    let priceOff = subtotal - (subtotal - (points / 10))
-                    setDiscount(priceOff)
-                    localStorage.setItem('discount', JSON.stringify(priceOff))
-                }
+                MySwal.fire({
+                    title: "Would you like to proceed with the utilization of your loyalty points?",
+                    icon: "question",
+                    showDenyButton: true,
+                    preConfirm: () => {
+                        let priceOff = subtotal - (subtotal - (points / 10))
+                        setDiscount(priceOff)
+                        localStorage.setItem('discount', JSON.stringify(priceOff))
+                    }
+                })
             } else {
-                if (user.loyaltyPoints <= points) alert("You don't have enough points")
-                else if (points < 9) alert("You must enter points more than 9")
+                if (user.loyaltyPoints <= points) {
+                    MySwal.fire({
+                        title: "You don't have enough points",
+                        icon: "error"
+                    })
+                } else if (points < 9) {
+                    MySwal.fire({
+                        title: "You must enter a value greater than 9 points",
+                        icon: "error"
+                    })
+                }
             }
         }
         e.target.children[2].value = ''
@@ -117,6 +139,11 @@ export const Cart = () => {
         total += (item.product.price * item.quantity),
         0)
     )
+
+    const removeDiscount = () => {
+        localStorage.removeItem('discount')
+        setDiscount(0)
+    }
 
     return (
         <div>
@@ -179,10 +206,20 @@ export const Cart = () => {
                                 onChange={(e) => setPoints(Number(e.target.value))}
                             />
 
-                            <button type='submit'
-                                className='px-4 py-3 bg-[--theme-secondary] font-bold rounded-lg w-1/2 hover:bg-[--theme-secondary-hover] transition-colors text-white'>
-                                Submit
-                            </button>
+                            <div className='flex gap-x-3'>
+                                <button type='submit'
+                                    className='px-4 py-3 bg-[--theme-secondary] font-bold rounded-lg w-1/2 hover:bg-[--theme-secondary-hover] transition-colors text-white'
+                                >
+                                    Submit
+                                </button>
+                                <button type='button'
+                                    className='px-4 py-3 bg-red-600 font-bold rounded-lg w-1/2 hover:bg-red-700 transition-colors text-white'
+                                    disabled={discount == 0}
+                                    onClick={removeDiscount}
+                                >
+                                    Remove
+                                </button>
+                            </div>
                         </form>
 
 
@@ -202,7 +239,11 @@ export const Cart = () => {
                             <h5 className='text-xl font-semibold col-span-2'>Total Amount :</h5>
                             <span>Rs. {subtotal - discount}</span>
                         </div>
-                        <button className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white mt-8 text-center w-full' onClick={submit}>Proceed to Checkout</button>
+                        <button
+                            className='block px-4 py-3 bg-[--theme-secondary] font-bold hover:bg-[--theme-secondary-hover] transition-colors text-white mt-8 text-center w-full'
+                            onClick={submit}
+                            disabled={cart?.length === 0}
+                        > Proceed to Checkout </button>
                     </div>
                 </div>
             </div>
