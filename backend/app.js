@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
+const { createTransport } = require('nodemailer')
 
 const Cart = require('./model/cart')
 const Order = require('./model/order')
@@ -13,7 +14,7 @@ const Product = require('./model/product')
 const User = require('./model/user')
 const auth = require('./middleware/auth')
 
-const { PORT, SECRET_KEY } = process.env
+const { PORT, SECRET_KEY, EMAIL_USERNAME, EMAIL_PASSWORD } = process.env
 
 const app = express()
 
@@ -125,6 +126,45 @@ app.put('/user/:id', auth, async (req, res) => {
 
 // Get token
 app.get('/token', async (req, res) => res.status(200).send(req.cookies.token))
+
+// Forgot password
+app.get('/forgetPassword', async (req, res) => {
+    const { userName } = req.body
+    if (!userName) {
+        return res.status(404).send("Please enter your Username")
+    }
+
+    const user = await User.find({ userName })
+
+    let otp = ""
+    for (let i = 0; i < 6; i++) {
+        const random = Math.floor((Math.random() * 10))
+        otp += random
+    }
+
+    const transporter = createTransport({
+        service: 'gmail',
+        auth: {
+            user: EMAIL_USERNAME,
+            pass: EMAIL_PASSWORD
+        }
+    });
+
+    const mailOptions = {
+        from: EMAIL_USERNAME,
+        to: user?.email,
+        subject: 'Your One-Time Password (OTP)',
+        text: `Dear [User's Name],\n\tYou have requested to reset your password for your account with Tech Store. Please use the following one-time password (OTP) to proceed with the password reset process:\n${otp}\nThis OTP is valid for a single use and expires after a short period. Please do not share this OTP with anyone.\n\tIf you did not request a password reset, please ignore this email. Your account security is important to us.\n\nThank you,\nTech Store Team`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            res.send(error);
+        } else {
+            res.send('Email sent: ' + info.response);
+        }
+    });
+})
 
 
 
