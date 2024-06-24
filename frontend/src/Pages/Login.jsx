@@ -15,13 +15,13 @@ export const Login = () => {
         e.preventDefault()
         axios.post(`${url}/login`, user)
             .then(res => {
-                console.log(res.data)
+                alert(res.data)
                 localStorage.setItem('token', res.data?.token)
                 navigate('/')
             })
             .catch(err => {
                 console.error(err)
-                console.error(err?.response?.data)
+                alert(err?.response?.data)
             })
     }
 
