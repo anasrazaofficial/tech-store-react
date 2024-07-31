@@ -102,4 +102,4 @@ function App() {
 export default App
 
 
-export const url = 'http://localhost:5000'
+export const url = 'https://tech-store-react-backend.vercel.app/'
