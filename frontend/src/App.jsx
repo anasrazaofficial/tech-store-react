@@ -13,7 +13,6 @@ function App() {
 
   useEffect(() => {
     let cartLocal = localStorage.getItem('cart')
-    debugger
     if (cartLocal) {
       setCart(JSON.parse(cartLocal))
     } else {
